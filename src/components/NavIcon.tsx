@@ -1,0 +1,4 @@
+export function NavIcon({name}:{name:'library'|'manage'|'study'|'game'}){
+ const paths={library:<><path d="M4 5h6a3 3 0 0 1 3 3v12a4 4 0 0 0-3-2H4z"/><path d="M13 8a3 3 0 0 1 3-3h4v13h-4a4 4 0 0 0-3 2"/></>,manage:<><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 9h8M8 13h5M8 17h3"/></>,study:<><rect x="6" y="6" width="14" height="15" rx="3"/><path d="M3 16V5a3 3 0 0 1 3-3h10M10 12h6M10 16h4"/></>,game:<><path d="M8 7h8a4 4 0 0 1 4 3l1 7a2 2 0 0 1-3 2l-3-2H9l-3 2a2 2 0 0 1-3-2l1-7a4 4 0 0 1 4-3Z"/><path d="M7 11v4M5 13h4M16 12h.01M18 14h.01"/></>};
+ return <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
+}

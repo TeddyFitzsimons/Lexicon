@@ -55,3 +55,21 @@ npm test
 npm run build
 npm run dev
 ```
+
+## Sentence game
+
+Open the Sentence game tab. Multiple choice is the default; switch to Type the word for written answers. Questions use your saved example sentences that contain the exact saved term (case-insensitive whole-word matching). Examples without a match are skipped. Inflected forms are not automatically guessed. Multiple choice needs at least two unique library terms; a single playable word can still be used in typing mode.
+
+Each round includes up to 10 unique words. Choose or type an answer, then Check answer. Feedback reveals the saved word and its definition before moving on. The results screen shows your score and lets you practice missed words. Your original vocabulary is not modified by playing.
+
+The waving mascot is included at public/lexicon-waving.png. Build and 16 automated tests verified; live browser visual verification unavailable.
+
+## Professional interface refresh
+
+This version adds a cohesive cream, sage and lilac interface across the library, editor, flashcards and sentence game. Desktop navigation uses a fixed sidebar; mobile navigation uses compact icon tabs. A welcome area features the supplied waving mascot and links to games and flashcards. Collection counts reflect actual saved words and favorites.
+
+The word library retains paired definitions and examples, thin meaning dividers, alternating rows, searchable word-type filtering, category grouping and all three sort orders. The editor preserves batch saves and provides visible save feedback. Flashcards display all meanings and examples.
+
+Shared appearance: src/polished.css. Navigation icons: src/components/NavIcon.tsx. Welcome area: src/components/Welcome.tsx.
+
+Validation: production build and automated tests. Browser visual verification unavailable in this environment.
