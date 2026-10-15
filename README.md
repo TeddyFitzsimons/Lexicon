@@ -1,36 +1,38 @@
 # Lexicon
 
-A personal, local-first vocabulary collection and flashcard app.
+Local-first personal dictionary and flashcard app.
 
-## Run
+## Start
 
-1. Install Node.js 20+.
-2. Run `npm install`.
-3. Run `npm run dev`.
-4. Open http://127.0.0.1:5173.
+Run `npm install`, then `npm run dev`, and open http://127.0.0.1:5173.
 
-## Features
+## Library
 
-- Add, edit, and delete vocabulary cards.
-- Required term and definition; optional part of speech, pronunciation, example sentences, synonyms, antonyms, and related forms.
-- Linked words are complete editable cards.
-- Search your library, mark favorites, and select all/favorites/custom sets for flashcard review.
-- Browser speech synthesis for pronunciation.
-- Custom menus and delete confirmation.
+The home screen is a searchable, sortable word table. Use **Add word** to open the editor. Each word can have multiple numbered definitions, each with its own optional example sentences. Favorites and related-word links are supported. Use the Study tab to choose a flashcard set.
 
-## Local data
+## Local data and upgrading
 
-Your vocabulary is stored in `data/vocabulary.json` and **excluded from Git**.
-When upgrading, copy the application files into your existing folder but keep your existing `data/vocabulary.json`.
-The local API runs in the Vite development server. Keep `npm run dev` running while using Lexicon.
-Back up `data/vocabulary.json` periodically.
+Words are saved to `data/vocabulary.json` on your computer, excluded from Git by `.gitignore`. **Preserve the existing `data/vocabulary.json` when upgrading.** The app reads the previous single-definition format and maps it into the new `senses` array when loading. The original `definition` and `example` fields remain for compatibility.
 
-## Architecture
+## Code structure
 
-- `src/components`: editor, library, study view, and custom pickers.
-- `src/lib/words.ts`: types, migration, normalization, and relationship helpers.
-- `src/lib/storage.ts`: local API access.
-- `vite.config.ts`: development-only file API and atomic JSON writes.
-- `src/style.css`: shared design system and responsive component styles.
+- `src/lib/words.ts`: word and sense data model, normalization and migration
+- `src/lib/storage.ts`: local storage API
+- `src/components/WordEditor.tsx`: create/edit words and meanings
+- `src/components/WordLibrary.tsx`: searchable home table
+- `src/components/StudyView.tsx`: study selection and flashcards
+- `src/components/SearchPicker.tsx`: custom select/search controls
+- `src/main.tsx`: application orchestration and dialogs
+- `vite.config.ts`: local JSON file API
 
-The logo is user-provided artwork, copied to `public/lexicon-mark.png`.
+The interface includes your supplied Lexicon logo. Build verification was not completed in this environment because npm dependency installation timed out.
+
+## Mascot
+
+The green cardinal mascot is stored in `public/lexicon-cardinal.png`. It appears in the empty library and study setup. The existing book logo remains the main brand icon.
+
+## Layout
+
+The Library is the home screen and uses the entire content width.
+Adding or editing a word opens a separate modal editor, so the editor never
+occupies permanent space in the library. Study is a separate tab.
