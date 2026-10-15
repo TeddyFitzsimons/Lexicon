@@ -8,7 +8,7 @@ Your computer will warn you the first time you open it. That's because I haven't
 
 Go to the latest release:
 
-**https://github.com/TeddyFitzsimons/Vocabulary-Learner/releases/latest**
+**https://github.com/TeddyFitzsimons/Lexicon/releases/latest**
 
 Under **Assets**, download one file:
 
@@ -78,4 +78,4 @@ Uninstalling leaves your words in place, in case you reinstall. To erase them co
 
 ## Something broken?
 
-Open an issue at **https://github.com/TeddyFitzsimons/Vocabulary-Learner/issues**, or just text me. Tell me whether you're on Mac or Windows and what you clicked before it went wrong.
+Open an issue at **https://github.com/TeddyFitzsimons/Lexicon/issues**, or just text me. Tell me whether you're on Mac or Windows and what you clicked before it went wrong.
