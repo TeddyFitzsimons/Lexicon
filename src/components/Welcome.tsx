@@ -1,3 +1,4 @@
+import {hasDefinition} from '../lib/words';
 import {useState} from 'react';
 import type {Word} from '../lib/words';
 import {playableQuestions} from '../lib/sentenceGame';
@@ -17,7 +18,7 @@ type Feature={kind:Featured|'empty';art?:string;label:string;cta:string;icon:'ga
 
 /** Builds the banner from the learner's own words, so every featured activity shows a real example. */
 function chooseFeature(words:Word[],a:WelcomeActions):Feature{
- const sentences=playableQuestions(words),meanings=meaningQuestions(words),withDefs=words.filter(w=>w.term.trim()&&w.senses.some(s=>s.definition.trim()));
+ const sentences=playableQuestions(words),meanings=meaningQuestions(words),withDefs=words.filter(w=>w.term.trim()&&hasDefinition(w));
  const available:Featured[]=[];
  if(sentences.length)available.push('sentence');
  if(meanings.length)available.push('meaning');

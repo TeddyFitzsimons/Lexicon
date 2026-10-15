@@ -10,7 +10,7 @@ import {SHARE_FORMAT} from './share.ts';
  * Unlike a share file, nothing is filtered out, because it only ever goes back to its owner.
  */
 export const BACKUP_FORMAT='lexicon-backup';
-export const BACKUP_VERSION=1;
+export const BACKUP_VERSION=2;
 export const MAX_RESTORE_BYTES=8_000_000;
 
 export type BackupFile={format:typeof BACKUP_FORMAT;version:number;exportedAt:string;words:Word[];profile:Profile};

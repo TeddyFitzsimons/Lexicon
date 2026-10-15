@@ -1,4 +1,4 @@
-import type {Word} from './words';
+import {definitionEntries,type Word} from './words.ts';
 import {category} from './collection.ts';
 import {answerKey,maskTerms,shuffle,type Segment} from './gameText.ts';
 
@@ -15,7 +15,7 @@ export function entries(words:Word[]):Entry[]{
  const byTerm=new Map<string,Entry>();
  for(const w of words){
   const term=w.term.trim();if(!term)continue;
-  const senses=w.senses.map(s=>({id:s.id,definition:s.definition.trim(),examples:s.examples.filter(x=>x.trim())})).filter(s=>s.definition);
+  const senses=definitionEntries(w).map(s=>({id:s.id,definition:s.definition.trim(),examples:s.examples.filter(x=>x.trim())}));
   if(!senses.length)continue;
   const key=answerKey(term),existing=byTerm.get(key);
   if(existing)existing.senses.push(...senses);

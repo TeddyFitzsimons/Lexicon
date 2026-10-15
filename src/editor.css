@@ -124,3 +124,23 @@
  .ed-savebar>span{font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){.ed-chevron,.ed-card{transition:none}}
+
+/* Hierarchical definition controls, aligned with the existing editor palette. */
+.ed-node-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.ed-node-title{font-size:12px;font-weight:700;color:#55704a}
+.ed-node-actions{display:flex;align-items:center;gap:4px}
+.ed-node-actions .ed-meaning-remove{margin:0}
+.ed-reorder{display:inline-flex;gap:4px}
+.ed-reorder .ed-mini-button{width:30px;height:30px;padding:0;justify-content:center;font-size:16px}
+.ed-subdefinitions{display:flex;flex-direction:column;gap:14px;padding:14px 0 2px;border-top:1px solid #e6ecdf}
+.ed-subdefinition{display:grid;grid-template-columns:27px minmax(0,1fr);gap:10px;align-items:start;padding:12px 12px 14px 10px;background:#f8faf5;border:1px solid #e6eddf;border-radius:12px}
+.ed-sub-letter{font-weight:700;font-size:13px;color:#547345;padding-top:6px}
+.ed-sub-fields{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ed-add-subdefinition{align-self:flex-start;margin-left:0}
+.ed-meaning-fields{gap:10px}
+.ed-meanings .ed-meaning{grid-template-columns:30px minmax(0,1fr);border-bottom:1px solid #e6ecdf;padding-bottom:16px}
+.ed-meanings .ed-meaning-number{margin-top:3px}
+@media(max-width:600px){.ed-meanings .ed-meaning{grid-template-columns:1fr}.ed-meanings .ed-meaning-number{display:none}.ed-subdefinition{grid-template-columns:22px minmax(0,1fr);padding:10px 8px}.ed-node-actions{gap:2px}}
+
+.ed-example-number{min-width:1.6rem;font-size:.8rem;color:var(--muted,#777);font-weight:600;flex-shrink:0}
+.hierarchy-example-label{font-weight:600;margin-right:.25rem}

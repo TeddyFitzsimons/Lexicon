@@ -2,6 +2,14 @@
 
 Each `## <version>` section becomes the notes of the matching GitHub release.
 
+## Unreleased: hierarchical definitions
+
+- Add optional lettered subdefinitions beneath numbered definitions, each with its own examples.
+- Reorder or delete individual definitions or subdefinitions; numbering and lettering are recalculated from their positions, while stable node IDs and examples stay together.
+- The library, flashcards, definition game, spelling game, test questions, sentence game, editor search, and share previews understand subdefinitions.
+- Existing flat vocabulary files and old backups migrate when loaded. New share and backup files use version 2 to preserve the hierarchy and prevent older versions from silently discarding it.
+- New hierarchy tests cover the Lexicon example, edits, legacy migration, games, imports, sharing, and backup restoration.
+
 ## 2.2.0
 
 Lexicon is now a desktop app for macOS and Windows. Download it, install it, and use it with no browser, account or internet connection.

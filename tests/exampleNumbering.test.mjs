@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const component=readFileSync(new URL('../src/components/DefinitionList.tsx',import.meta.url),'utf8');
+const editor=readFileSync(new URL('../src/components/ManageWords.tsx',import.meta.url),'utf8');
+const games=readFileSync(new URL('../src/components/Games.tsx',import.meta.url),'utf8');
+test('examples show numeric labels under primary definitions',()=>assert.match(component,/hierarchy-example-label.*j\+1/));
+test('examples show alphabetic labels under subdefinitions',()=>assert.match(component,/hierarchy-example-label.*letterFor\(k\)/));
+test('editor supports lettered subdefinition examples',()=>assert.match(editor,/numbering="alpha" examples=\{sub.examples\}/));
+test('games use gaming mascot',()=>assert.match(games,/lexicon-gaming.png/));

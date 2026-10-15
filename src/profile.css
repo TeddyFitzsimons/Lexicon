@@ -128,3 +128,9 @@
  .pf-batch-count{width:48px;height:48px}
  .pf-batch-body>p{flex-direction:column;gap:2px}
 }
+
+/* Import preview also shows lettered definitions, without trimming longer meanings. */
+.pf-incoming-text .pf-incoming-hierarchy{display:flex;flex-direction:column;gap:5px;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+.pf-incoming-primary{display:flex;flex-direction:column;gap:3px}
+.pf-incoming-hierarchy b{font-size:inherit;font-weight:700}
+.pf-incoming-sub{display:block;padding-left:18px}
