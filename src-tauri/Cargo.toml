@@ -30,3 +30,8 @@ lto = true
 opt-level = "s"
 panic = "abort"
 strip = true
+
+# Never strip the compile-time helper crates; on some Macs that breaks them.
+# The finished app itself is still stripped.
+[profile.release.build-override]
+strip = false
