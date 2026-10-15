@@ -1,0 +1,78 @@
+/* Games hub */
+.games-hub{max-width:940px;margin:0 auto 50px;color:var(--ink)}
+.games-hub-heading{margin-bottom:28px;max-width:620px}
+.games-hub-heading h1{font:700 39px/1.2 'DM Sans',sans-serif;letter-spacing:-1.2px;color:var(--ink);margin:4px 0 10px}
+.games-hub-heading p{font-size:14px;line-height:1.7;color:#6f8266;margin:0}
+.games-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.game-entry{width:100%;display:grid;grid-template-columns:168px 1fr auto;align-items:center;gap:26px;padding:16px 22px 16px 16px;text-align:left;background:var(--surface,#fffefb);border:1px solid #dce5d1;border-bottom:4px solid #dce5d1;border-radius:20px;color:inherit;transition:border-color .15s,background .15s}
+.game-entry:hover{background:#f6f9ef;border-color:#b5cb9c}
+.game-entry:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.game-entry-copy{display:flex;flex-direction:column;gap:6px;min-width:0}
+.game-entry-title{font:700 21px/1.3 'DM Sans',sans-serif;letter-spacing:-.4px;color:var(--ink)}
+.game-entry-desc{font-size:13px;line-height:1.65;color:#6b7e62;max-width:52ch}
+.game-entry-ready{font-size:11px;font-weight:600;color:#5e8a4a;margin-top:2px}
+.game-entry-ready.not-ready{color:#a3825b}
+.game-entry-play{display:inline-flex;align-items:center;min-height:42px;padding:0 20px;border-radius:11px;background:var(--green,var(--brand));border-bottom:3px solid var(--brand-deep);color:#fff;font-size:12px;font-weight:700}
+.game-entry:hover .game-entry-play{background:var(--brand-hover)}
+.game-preview{height:104px;border-radius:14px;background:#eef4e4;border:1px solid #dfe8d3;padding:16px;overflow:hidden}
+.preview-sentence{font:600 15px/1.9 'DM Sans',sans-serif;color:#5b7650}
+.preview-sentence span{margin-right:6px}
+.preview-blank{display:inline-block;width:46px;height:18px;vertical-align:-3px;background:#fffefb;border-bottom:2px solid #6a8d57;border-radius:4px 4px 0 0}
+.preview-meaning{display:flex;flex-direction:column;gap:7px;background:#f1eef8;border-color:#e3def0}
+.preview-meaning strong{font:700 17px/1.1 'DM Sans',sans-serif;color:#4c4470;margin-bottom:3px}
+.preview-line{height:12px;border-radius:5px;background:#fffefb;border:1px solid #e3def0}
+.preview-line.picked{background:#dcebcf;border-color:#a7c48d;width:82%}
+
+/* Back link inside a game */
+.game-frame{max-width:940px;margin:0 auto}
+.games-back{display:inline-flex;align-items:center;gap:6px;margin:0 0 18px -6px;padding:7px 10px;border:0;border-radius:9px;background:none;color:#5f7a55;font-size:12px;font-weight:700}
+.games-back:hover{background:#e9efdf;color:var(--ink)}
+.games-back:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* Pick the meaning */
+.meaning-scene{min-height:260px}
+.meaning-bubble{min-height:170px;align-items:flex-start}
+.meaning-term-row{display:flex;align-items:center;gap:14px;margin:12px 0 10px;flex-wrap:wrap}
+.meaning-term{font:700 clamp(36px,5vw,54px)/1.05 'DM Sans',sans-serif;letter-spacing:-1.8px;color:var(--ink);margin:0;overflow-wrap:anywhere}
+.meaning-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:#6f8266}
+.meaning-pos{padding:4px 10px;border-radius:99px;background:#f1eef8;color:#5a5180;font-size:11px;font-weight:700}
+.meaning-options{display:flex;flex-direction:column;gap:10px}
+.meaning-option{display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;padding:15px 18px;border:1px solid #dce5d1;border-bottom-width:3px;border-radius:14px;background:#fffefb;color:#3f5b43;font-size:15px;line-height:1.6;transition:background .15s,border-color .15s}
+.meaning-option .choice-letter{margin-top:-1px}
+.meaning-option:hover:not(:disabled){background:#f3f7eb;border-color:#a9c28c}
+.meaning-option.selected{background:#eaf3dc;border-color:#89ac64;color:#2b532f}
+.meaning-option.selected .choice-letter{background:#6f9a52;border-color:#6f9a52;color:#fff}
+.meaning-option:disabled{cursor:default;opacity:1}
+.meaning-option.correct{background:#e6f2d8;border-color:#80a85f}
+.meaning-option.correct .choice-letter{background:#5f8f45;border-color:#5f8f45;color:#fff}
+.meaning-option.incorrect{background:#faf0e5;border-color:#d8b994}
+.meaning-option.incorrect .choice-letter{background:#c0895a;border-color:#c0895a;color:#fff}
+.meaning-option.settled{color:#7b8b73;background:#fbfbf6}
+.meaning-option:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.meaning-option-text{display:flex;flex-direction:column;gap:6px;min-width:0;overflow-wrap:anywhere}
+.option-owner{font-size:11px;font-weight:500;color:#6f8266}
+.meaning-option.correct .option-owner{color:#4b7a35}
+.meaning-option.incorrect .option-owner{color:#9a6a41}
+.masked-word{display:inline-block;min-width:3.4em;height:1.05em;vertical-align:-.15em;margin:0 2px;background:#edf3e3;border-bottom:2px solid #8aab72;border-radius:4px 4px 0 0}
+.masked-word.revealed{min-width:0;height:auto;vertical-align:baseline;padding:0 4px;font-weight:700;color:#4b7a35}
+.meaning-example{font-style:italic}
+.meaning-score{display:flex;align-items:baseline;justify-content:center;gap:8px;margin:6px 0 0;color:var(--ink)}
+.meaning-score-number{font:700 64px/1 'DM Sans',sans-serif;letter-spacing:-2px}
+.meaning-score-total{font:600 22px/1 'DM Sans',sans-serif;color:#7b8b73}
+
+@media(max-width:720px){
+ .games-hub-heading h1{font-size:32px}
+ .game-entry{grid-template-columns:1fr;gap:14px;padding:14px}
+ .game-preview{height:88px}
+ .game-entry-play{justify-self:start}
+ .meaning-scene{min-height:250px}
+ .meaning-term{font-size:36px}
+ .meaning-option{font-size:14px;padding:13px 12px;gap:10px}
+}
+@media(hover:none){.keyboard-hint{display:none}}
+@media(prefers-reduced-motion:reduce){.game-entry,.meaning-option{transition:none}}
+.preview-spell{display:flex;flex-direction:column;justify-content:center;gap:10px;background:#f5efdf;border-color:#ebdfc1}
+.preview-speaker{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#7a5c22;color:#fff}
+.preview-tiles{display:flex;gap:4px}
+.preview-tiles b,.preview-tiles i{display:grid;place-items:center;width:20px;height:24px;border-radius:5px;background:#fffefb;border-bottom:2px solid #c7a96a;font:700 13px 'DM Sans',sans-serif;color:#5b4416;font-style:normal}
+.preview-tiles i{background:#fbf7ec;border-bottom-color:#e2d3ae}

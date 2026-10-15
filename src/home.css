@@ -1,0 +1,41 @@
+/* Library home: a featured activity built from the learner's own words. */
+.feature-banner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:center;gap:24px;min-height:300px;padding:36px 44px;border:1px solid #dce6cd;border-radius:26px;background:#eaf1dc;overflow:hidden;isolation:isolate}
+.feature-banner:after{content:'';position:absolute;z-index:-1;right:-60px;bottom:-120px;width:380px;height:380px;border-radius:50%;background:#f4f8ec}
+.feature-banner.is-meaning{background:#efecf7;border-color:#e0daf0}.feature-banner.is-meaning:after{background:#f7f5fc}
+.feature-banner.is-test{background:#e8eef4;border-color:#d6e0ea}.feature-banner.is-test:after{background:#f3f6f9}
+.feature-copy{min-width:0}
+.feature-label{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 9px;border-radius:99px;background:#fffefb;color:#476a40;font-size:12px;font-weight:700}
+.feature-label svg{width:17px;height:17px}
+.feature-banner.is-meaning .feature-label{color:#5a5180}.feature-banner.is-test .feature-label{color:#3a5a78}
+.feature-sentence{margin:20px 0 14px;max-width:24ch;font:500 clamp(26px,3.3vw,42px)/1.35 'DM Sans',sans-serif;letter-spacing:-1px;color:var(--ink);overflow-wrap:anywhere}
+.feature-blank{display:inline-block;width:3.2em;height:.95em;margin:0 .18em;vertical-align:-.1em;border-bottom:3px solid #6a8d57;background:#fffefb;border-radius:6px 6px 0 0}
+.feature-term{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;margin:16px 0 8px;font:700 clamp(48px,6.4vw,88px)/1 'DM Sans',sans-serif;letter-spacing:-.045em;color:var(--ink);overflow-wrap:anywhere}
+.feature-banner.is-meaning .feature-term{color:#3d3566}
+.feature-term span{font:italic 400 18px/1 var(--serif);letter-spacing:0;color:#7a7298}
+.feature-banner.is-flashcards .feature-term span{color:#6c8160}
+.feature-question{margin:20px 0 12px;max-width:22ch;font:700 clamp(30px,3.6vw,48px)/1.12 'DM Sans',sans-serif;letter-spacing:-1.4px;color:var(--ink)}
+.feature-banner.is-test .feature-question{color:#243f58}
+.feature-sub{margin:0 0 24px;max-width:44ch;font-size:14px;line-height:1.65;color:#5f7355}
+.feature-banner.is-meaning .feature-sub{color:#665f84}.feature-banner.is-test .feature-sub{color:#566c80}
+.feature-cta{min-height:48px;padding:0 22px}
+.feature-banner.is-test .feature-cta{background:#33587a;border-color:#2b4c6a;border-bottom-color:#203b54}
+.feature-banner.is-meaning .feature-cta{background:#4e4683;border-color:#433c74;border-bottom-color:#352f60}
+.feature-bird{justify-self:end;width:220px;height:230px;object-fit:contain;transform:rotate(-3deg);filter:drop-shadow(0 10px 10px #3b5d2314)}
+.feature-bird.is-scene{width:250px;height:220px;transform:none}
+.feature-banner.is-spell{background:#f5efdf;border-color:#ebdfc1}.feature-banner.is-spell:after{background:#faf6ea}
+.feature-banner.is-spell .feature-label{color:#86662b}.feature-banner.is-spell .feature-question{color:#4f3d17}.feature-banner.is-spell .feature-sub{color:#7a6741}
+.feature-banner.is-spell .feature-cta{background:#7a5c22;border-color:#6a4f1a;border-bottom-color:#55400f}
+.home-strip{display:grid;grid-template-columns:150px 150px minmax(0,1fr);gap:12px;margin:12px 0 44px}
+.home-stat{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:18px 22px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.home-stat strong{font:700 30px/1 'DM Sans',sans-serif;letter-spacing:-1px;color:var(--ink)}
+.home-stat span{font-size:12px;color:#738569}
+.home-stat.is-gold strong{color:#9a7428}
+.home-quote{display:flex;flex-direction:column;justify-content:center;padding:18px 24px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+@media(max-width:1000px){.feature-banner{grid-template-columns:minmax(0,1fr) 170px;padding:30px}.feature-bird{width:170px;height:180px}}
+@media(max-width:700px){
+ .feature-banner{display:block;padding:24px 22px 26px;min-height:0}
+ .feature-bird{position:absolute;right:-4px;bottom:-4px;width:112px;height:120px;z-index:-1}
+ .feature-sub{max-width:none}
+ .home-strip{grid-template-columns:1fr 1fr}
+ .home-quote{grid-column:1/-1}
+}

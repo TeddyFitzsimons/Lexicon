@@ -1,15 +1,15 @@
-import {useEffect,useRef,useState} from 'react';
 import {category,categoryOrder,type SortOrder} from '../lib/collection';
 import type {Word} from '../lib/words';
+import {Select} from './Select';
 export const sortLabels:Record<SortOrder,string>={oldest:'Oldest first',newest:'Newest first',alphabetical:'Alphabetical (A–Z)'};
+
+/** Part-of-speech filter and sort order, both on Lexicon's custom dropdown. */
 export function LibraryControls({words,value,onChange,sort,onSort}:{words:Word[];value:string;onChange:(value:string)=>void;sort:SortOrder;onSort:(value:SortOrder)=>void}){
- const [open,setOpen]=useState(false),[query,setQuery]=useState('');
- const root=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null);
- useEffect(()=>{if(!open)return;function outside(e:PointerEvent){if(!root.current?.contains(e.target as Node))setOpen(false)}function escape(e:KeyboardEvent){if(e.key==='Escape'){setOpen(false);trigger.current?.focus()}}document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape)}},[open]);
- const categories=[...new Set([...categoryOrder,...words.map(category)])];
- const options=[{id:'all',label:'All parts of speech',count:words.length},{id:'grouped',label:'All, grouped by part of speech',count:words.length},...categories.map(p=>({id:p,label:p,count:words.filter(w=>category(w)===p).length}))];
- const matching=options.filter(o=>o.label.toLowerCase().includes(query.trim().toLowerCase()));
- const label=value==='all'?'All parts of speech':value==='grouped'?'Grouped by part of speech':value;
- function choose(id:string){onChange(id);setOpen(false);trigger.current?.focus()}
- return <div className="library-controls"><div className="word-type-control" ref={root} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node))setOpen(false)}}><button ref={trigger} type="button" className="collection-control" aria-expanded={open} aria-controls="word-type-options" onClick={()=>{setOpen(!open);setQuery('')}}><span>{label}</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>{open&&<div className="word-type-menu" id="word-type-options" onKeyDown={e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){const items=Array.from(e.currentTarget.querySelectorAll<HTMLElement>('input,button'));const index=items.indexOf(document.activeElement as HTMLElement);const next=(index+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;e.preventDefault();items[next]?.focus()}}}><input autoFocus type="search" aria-label="Search parts of speech" placeholder="Search parts of speech…" value={query} onChange={e=>setQuery(e.target.value)}/><div className="word-type-options">{matching.map(o=><button type="button" key={o.id} className={value===o.id?'chosen':''} aria-pressed={value===o.id} onClick={()=>choose(o.id)}><span>{o.label}</span><span className="type-option-count">{o.count}</span>{value===o.id&&<span aria-hidden="true">✓</span>}</button>)}{!matching.length&&<p className="type-no-results">No matching word types.</p>}</div></div>}</div><label className="sort-control"><span className="sr-only">Sort words</span><select className="collection-control" value={sort} onChange={e=>onSort(e.target.value as SortOrder)}>{Object.entries(sortLabels).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label></div>;
+ const present=new Set(words.map(category));
+ const categories=[...new Set([...categoryOrder,...present])].filter(p=>present.has(p));
+ const filterOptions=[{value:'all',label:'All parts of speech',detail:words.length},{value:'grouped',label:'Grouped by part of speech',detail:words.length},...categories.map(p=>({value:p,label:p,detail:words.filter(w=>category(w)===p).length}))];
+ return <div className="library-controls">
+  <Select label="Part of speech" value={value} options={filterOptions} onChange={onChange} className="filter-select"/>
+  <Select label="Sort words" value={sort} options={(Object.keys(sortLabels) as SortOrder[]).map(id=>({value:id,label:sortLabels[id]}))} onChange={onSort} className="sort-select"/>
+ </div>;
 }

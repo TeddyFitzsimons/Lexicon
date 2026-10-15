@@ -1,4 +1,5 @@
-import {ipaToReadable} from './ipa';
+import {ipaToReadable} from './ipa.ts';
+import {dayKey,isDayKey} from './dates.ts';
 /** Domain model. Relationships store stable IDs, not display text. */
 export type Sense = { id: string; definition: string; examples: string[] };
 export type RelatedTerm = { term: string; url: string };
@@ -10,12 +11,14 @@ export type Word = {
   /** Kept for backwards compatibility with the original local JSON format. */
   example: string;
   favorite: boolean;
+  /** Local date (YYYY-MM-DD) the word was added; empty for words saved before this was tracked. */
+  addedAt: string;
 };
 export type Draft = Omit<Word, 'id'>;
 export const parts = ['Noun','Verb','Adjective','Adverb','Pronoun','Preposition','Conjunction','Interjection','Determiner','Other'];
 export const relations: Relation[] = ['synonyms','antonyms','relatedForms'];
 export const labels: Record<Relation,string> = {synonyms:'Synonyms',antonyms:'Antonyms',relatedForms:'Related forms'};
-export const emptyDraft = (): Draft => ({term:'',definition:'',senses:[{id:crypto.randomUUID(),definition:'',examples:[]}],partOfSpeech:'Noun',pronunciation:'',readablePronunciation:'',readableManuallyEdited:false,examples:[],example:'',favorite:false,synonyms:[],antonyms:[],relatedForms:[]});
+export const emptyDraft = (): Draft => ({term:'',definition:'',senses:[{id:crypto.randomUUID(),definition:'',examples:[]}],partOfSpeech:'Noun',pronunciation:'',readablePronunciation:'',readableManuallyEdited:false,examples:[],example:'',favorite:false,addedAt:dayKey(new Date()),synonyms:[],antonyms:[],relatedForms:[]});
 
 /** Read legacy four-field entries without destroying any saved words. */
 export function normalize(value: unknown, lookup:Map<string,string>=new Map()): Word {
@@ -33,7 +36,7 @@ export function normalize(value: unknown, lookup:Map<string,string>=new Map()): 
   if (!examples.length && str(raw.example).trim()) examples.push(str(raw.example));
   const senses = Array.isArray(raw.senses) ? raw.senses.filter((x):x is Record<string,unknown>=>!!x&&typeof x==='object').map(x=>({id:str(x.id)||crypto.randomUUID(),definition:str(x.definition),examples:Array.isArray(x.examples)?x.examples.filter((y):y is string=>typeof y==='string'):[]})) : [];
   if (!senses.length) senses.push({id:crypto.randomUUID(),definition:str(raw.definition),examples});
-  return {id:str(raw.id)||crypto.randomUUID(),term:str(raw.term),definition:str(raw.definition)||senses[0]?.definition||'',senses,partOfSpeech:str(raw.partOfSpeech)||'Noun',pronunciation:str(raw.ipa)||str(raw.pronunciation),readablePronunciation:str(raw.readablePronunciation)||(() => {const result=ipaToReadable(str(raw.ipa)||str(raw.pronunciation));return result.ok?result.readable:''})(),readableManuallyEdited:raw.readableManuallyEdited===true,examples,example:examples[0]||'',favorite:raw.favorite===true,synonyms:related(raw.synonyms,lookup),antonyms:related(raw.antonyms,lookup),relatedForms:related(raw.relatedForms,lookup)};
+  return {id:str(raw.id)||crypto.randomUUID(),term:str(raw.term),definition:str(raw.definition)||senses[0]?.definition||'',senses,partOfSpeech:str(raw.partOfSpeech)||'Noun',pronunciation:str(raw.ipa)||str(raw.pronunciation),readablePronunciation:str(raw.readablePronunciation)||(() => {const result=ipaToReadable(str(raw.ipa)||str(raw.pronunciation));return result.ok?result.readable:''})(),readableManuallyEdited:raw.readableManuallyEdited===true,examples,example:examples[0]||'',favorite:raw.favorite===true,addedAt:isDayKey(raw.addedAt)?raw.addedAt:'',synonyms:related(raw.synonyms,lookup),antonyms:related(raw.antonyms,lookup),relatedForms:related(raw.relatedForms,lookup)};
 }
 export function cleaned(draft:Draft,id:string):Word {
   const examples=draft.examples.map(x=>x.trim()).filter(Boolean);

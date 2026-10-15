@@ -1,4 +1,5 @@
 import {normalize, type Word} from './words';
+import {normalizeProfile,type Profile} from './activity';
 const oldKey='vocabulary-words-v1';
 /** The Vite dev server writes to data/vocabulary.json, never browser storage. */
 export async function saveWords(words:Word[]):Promise<void> {
@@ -18,4 +19,15 @@ export async function loadWords():Promise<Word[]> {
     if(legacy){const parsed:unknown=JSON.parse(legacy);if(Array.isArray(parsed)&&parsed.length){words=parsed.map(x=>normalize(x));await saveWords(words);}}
   }
   return words;
+}
+
+/** Name and activity log live in data/profile.json, beside the vocabulary. */
+export async function loadProfile():Promise<Profile>{
+  const response=await fetch('/api/profile');
+  if(!response.ok) throw new Error(await response.text());
+  return normalizeProfile(await response.json());
+}
+export async function saveProfile(profile:Profile):Promise<void>{
+  const response=await fetch('/api/profile',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
+  if(!response.ok) throw new Error(await response.text());
 }

@@ -1,0 +1,9 @@
+/* TEAM */
+Creator: Teddy Fitzsimons
+GitHub: https://github.com/TeddyFitzsimons
+LinkedIn: https://www.linkedin.com/in/teddy-fitzsimons/
+
+/* ABOUT */
+I made Lexicon on my lunch break for fun. It's meant to help people improve
+their vocabulary: save the words you love, then learn them through games,
+tests and flashcards.

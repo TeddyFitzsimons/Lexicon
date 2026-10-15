@@ -1,0 +1,145 @@
+/*
+ * Lexicon theme: a personal dictionary.
+ * Dark forest frame, Fraunces for words and headings, DM Sans for the interface,
+ * and one signature mark: a marigold highlighter swipe, used for "this is the one".
+ */
+:root{
+ --canvas:#F4F3EC;--surface:#FFFEFA;--line:#E1E3D7;--line-strong:#CDD2C2;
+ --ink:#15342A;--ink-soft:#2C4D3F;--secondary:#5D7065;--muted:#7B8A80;
+ --brand:#1F6B47;--brand-deep:#134A31;--brand-hover:#26794F;--green:var(--brand);
+ --sidebar:#122A20;--sidebar-raised:#1A3A2C;--on-sidebar:#B7C7BB;
+ --highlight:#FFD66B;--marigold:#E9A93A;--focus:#DFA01E;
+ --serif:'Fraunces',Georgia,'Times New Roman',serif;--sans:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+body{background:var(--canvas);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--highlight);color:var(--ink)}
+:focus-visible{outline-color:var(--focus)}
+
+/* Highlighter swipe: a marker stroke under the lower half of the text. */
+.hl{background:linear-gradient(100deg,transparent .08em,var(--highlight) .08em,var(--highlight) calc(100% - .05em),transparent calc(100% - .05em)) 0 88%/100% .42em no-repeat;color:inherit;padding:0 .06em;border-radius:.1em}
+
+/* Headings and words read like a dictionary. */
+:is(h1,h2):not(.sr-only){font-family:var(--serif)!important;font-weight:600!important;letter-spacing:-.02em!important;font-optical-sizing:auto}
+.term-button,.meaning-term,.feature-term,.feature-question,.feature-sentence,.test-q-prompt.is-term,.study-card h3,.ed-term,.test-grade-letter,.pf-name button>span{font-family:var(--serif)!important;font-optical-sizing:auto}
+.term-button{font-weight:600!important;letter-spacing:-.01em;color:var(--ink)!important}
+.ed-term{font-weight:600!important}
+
+/* Frame: a dark forest sidebar. The current page gets the highlighter. */
+.site-header,.workspace-nav{background:var(--sidebar)!important;border:0!important}
+.page{border-left:0!important}
+.brand-name{font-family:var(--serif)!important;font-weight:600!important;font-size:27px!important;letter-spacing:-.02em!important;color:#F3EFE0!important}
+.brand-logo{filter:brightness(0) invert(.93)}
+.workspace-tabs{gap:4px!important}
+.workspace-tabs button{position:relative;isolation:isolate;color:var(--on-sidebar)!important;background:transparent!important;border:0!important;box-shadow:none!important;font-weight:600!important;transition:color .15s}
+.workspace-tabs button:hover{color:#fff!important;background:#ffffff0f!important}
+.workspace-tabs button.selected{color:var(--sidebar)!important;background:transparent!important}
+.workspace-tabs button.selected::before{content:'';position:absolute;inset:7px 2px;z-index:-1;background:var(--highlight);border-radius:7px 16px 9px 14px/12px 9px 14px 10px;transform:rotate(-1.4deg)}
+.workspace-tabs button.selected:hover{color:var(--sidebar)!important}
+.workspace-caption,.sidebar-quote{border-top-color:#ffffff1a!important}
+.sidebar-quote blockquote{color:#D6E0D5!important}
+.sidebar-quote figcaption{color:#8FA597!important}
+.workspace-tabs button:focus-visible{outline:2px solid var(--highlight);outline-offset:1px}
+
+/* Buttons: firm and tactile. */
+.primary-button,.add-word-button,.game-entry-play{background:var(--brand)!important;border:0!important;border-bottom:3px solid var(--brand-deep)!important;border-radius:11px!important;color:#fff!important;font-weight:700!important;letter-spacing:.005em;transition:transform .12s,background .12s}
+.primary-button:hover:not(:disabled),.add-word-button:hover{background:var(--brand-hover)!important;transform:translateY(-1px)}
+.primary-button:active:not(:disabled){transform:translateY(1px);border-bottom-width:2px!important}
+.primary-button:disabled{background:#9DB3A6!important;border-bottom-color:#86A08F!important}
+.quiet-button,.filter-button{background:var(--surface)!important;border:1px solid var(--line-strong)!important;border-bottom-width:2px!important;border-radius:11px!important;color:var(--ink-soft)!important;box-shadow:none!important;font-weight:650}
+.quiet-button:hover,.filter-button:hover:not(:disabled){background:#F1F3EA!important;border-color:#B6BFAA!important}
+.add-word-icon{background:#ffffff26!important}
+
+/* Library: dictionary entries rather than spreadsheet rows. */
+.library-topline h2{font-size:34px!important}
+.heading-count{background:var(--ink)!important;color:#F3EFE0!important;font-family:var(--sans)}
+.table-shell{border:1px solid var(--line)!important;border-radius:18px!important;box-shadow:none!important;overflow:hidden}
+.words-table thead th{background:#ECEDE3!important;color:var(--muted)!important;letter-spacing:.04em!important}
+.words-table tbody tr,.row-cream,.row-sage{background:var(--surface)!important}
+.words-table tbody tr+tr td{border-top:1px solid #ECEEE4}
+.words-table tbody tr:hover{background:#FBFAF3!important}
+.term-button{font-size:23px!important}
+.speech-chip{background:transparent!important;border:1px solid var(--line-strong)!important;color:var(--ink-soft)!important;font:italic 500 13px var(--serif)!important;padding:3px 10px!important;border-radius:99px!important}
+.sense-number{font-family:var(--serif);color:var(--marigold)!important;font-weight:700}
+.meaning-examples p{font-family:var(--serif)!important;color:#55695E!important}
+.favorite-star.is-favorite{color:var(--marigold)!important}
+.collection-switch{background:#E8EAE0!important}
+.collection-switch .collection-active{background:var(--surface)!important;color:var(--ink)!important}
+
+/* Home: the featured activity, with the word under a highlighter. */
+.feature-banner{background:var(--surface)!important;border:1px solid var(--line)!important;border-radius:24px!important}
+.feature-banner::after{background:#DCEBD5!important;right:-40px!important;bottom:-150px!important;width:420px!important;height:420px!important}
+.feature-banner.is-meaning::after{background:#E5E0F5!important}
+.feature-banner.is-test::after{background:#DBE7F1!important}
+.feature-banner.is-spell::after{background:#FBE6B2!important}
+.feature-label{background:#F1F2EA!important;color:var(--ink-soft)!important}
+.feature-term,.feature-question,.feature-sentence{color:var(--ink)!important}
+.feature-term{font-weight:600!important;letter-spacing:-.035em!important}
+.feature-term span{font-family:var(--serif)!important;color:var(--muted)!important}
+.feature-question{font-weight:600!important;letter-spacing:-.025em!important}
+.feature-sentence{font-weight:450!important;letter-spacing:-.02em!important}
+.feature-blank{background:var(--highlight)!important;border-bottom:3px solid var(--marigold)!important}
+.feature-sub{color:var(--secondary)!important}
+.feature-cta{background:var(--brand)!important;border-bottom-color:var(--brand-deep)!important}
+.home-stat strong,.pf-stats dd,.pf-feed-stats dd,.test-grade-copy strong,.meaning-score-number{font-family:var(--serif)!important;font-weight:600!important}
+.home-stat.is-gold strong{color:#A26F12!important}
+
+/* Cards everywhere: one border, no drifting shadows. */
+.ed-card,.pf-card,.test-setup,.test-q,.game-entry,.home-stat,.home-quote,.game-bubble,.spell-stage,.panel,.study-card{border-color:var(--line)!important}
+.game-entry,.game-bubble,.spell-stage,.game-choice,.meaning-option,.test-option{box-shadow:none!important}
+.game-entry{border-bottom:3px solid var(--line-strong)!important}
+.game-entry:hover{border-color:#BFCBB2!important}
+
+/* Profile: the streak gets the frame colour and a marigold number. */
+.pf-hero{background:var(--surface)!important;border:1px solid var(--line)!important}
+.pf-stats>div{background:#F3F4EC!important}
+.pf-stats .is-streak{background:var(--sidebar)!important}
+.pf-stats .is-streak dd{color:var(--highlight)!important}
+.pf-stats .is-streak dt,.pf-stats .is-streak dd small{color:#A9BEAF!important}
+.pf-badges li.is-earned .pf-badge-mark{background:var(--marigold)!important}
+
+/* Mobile top bar stays in the frame colour. */
+@media(max-width:850px){
+ .workspace-nav{background:var(--sidebar)!important;border-bottom:0!important}
+ .workspace-tabs button.selected::before{inset:3px 2px}
+}
+@media(prefers-reduced-motion:reduce){.primary-button,.workspace-tabs button{transition:none!important}.primary-button:hover:not(:disabled){transform:none}}
+
+/* Sentence-case column labels. */
+.words-table thead th{text-transform:none!important;letter-spacing:0!important;font-size:12.5px!important;font-weight:600!important;color:var(--secondary)!important}
+
+/* Save bar sits in the frame colour; saving gets the highlighter. */
+.ed-savebar{background:var(--sidebar)!important}
+.ed-savebar .quiet-button{background:transparent!important;color:#DCE6DA!important;border:1px solid #ffffff38!important}
+.ed-savebar .quiet-button:hover{background:#ffffff12!important}
+.ed-savebar .primary-button{background:var(--highlight)!important;color:var(--ink)!important;border-bottom-color:var(--marigold)!important}
+.ed-savebar .primary-button:hover:not(:disabled){background:#FFE08A!important}
+.ed-savebar .primary-button:disabled{background:#ffffff1f!important;color:#ffffff80!important;border-bottom-color:#ffffff14!important}
+.ed-savebar>span.is-dirty:before{background:var(--highlight)!important}
+
+
+@media(max-width:700px){
+ .feature-copy{position:relative;z-index:1}
+ .feature-bird{z-index:0!important}
+ .library-topline h2{font-size:27px!important}
+}
+
+/* Trophies: bronze, silver and gold cups for earned milestones. */
+.pf-trophy{flex:none;overflow:visible}
+.pf-trophy.is-bronze{--t-dark:#8A5427;--t-mid:#C47F43;--t-light:#F0BE8C;--t-ink:#5A3214}
+.pf-trophy.is-silver{--t-dark:#6E7A80;--t-mid:#AEB9BE;--t-light:#EEF3F5;--t-ink:#3F4A50}
+.pf-trophy.is-gold{--t-dark:#A4700F;--t-mid:#E5AE35;--t-light:#FFE69A;--t-ink:#6B4706}
+.pf-shelf{margin-top:-4px}
+.pf-shelf h3{margin:0 0 10px;display:flex;align-items:center;gap:8px;font:600 13px var(--sans);color:var(--secondary)}
+.pf-shelf h3 span{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--highlight);color:var(--ink);font-size:11px;font-weight:700}
+.pf-shelf ul{list-style:none;margin:0;padding:0 4px 10px;display:flex;flex-wrap:wrap;gap:6px 22px;border-bottom:4px solid #D9CDB2;border-radius:0 0 3px 3px;box-shadow:0 3px 0 #C6B794}
+.pf-shelf li{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px;text-align:center;cursor:default}
+.pf-shelf li>span{font-size:11px;font-weight:600;line-height:1.25;color:var(--ink-soft)}
+.pf-shelf li .pf-trophy{transition:transform .18s}
+.pf-shelf li:hover .pf-trophy{transform:translateY(-3px) rotate(-3deg)}
+.pf-badges li.is-earned .pf-badge-mark{background:#FFF6DC!important}
+@media(max-width:600px){.pf-shelf ul{gap:6px 10px}.pf-shelf li{width:68px}}
+@media(prefers-reduced-motion:reduce){.pf-shelf li .pf-trophy{transition:none}.pf-shelf li:hover .pf-trophy{transform:none}}
+
+/* A quiet divider in the sidebar before Profile. */
+.nav-divider{display:block;height:1px;margin:8px 14px;background:#ffffff1f}
+@media(max-width:850px){.nav-divider{width:1px;height:28px;margin:auto 2px;align-self:center;flex:none}}

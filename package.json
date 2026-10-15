@@ -2,6 +2,8 @@
   "name": "lexicon",
   "version": "2.1.0",
   "private": true,
+  "description": "Lexicon: a personal vocabulary app. Made on my lunch break for fun, to help people improve their vocabulary.",
+  "author": "Teddy Fitzsimons (https://github.com/TeddyFitzsimons)",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",

@@ -4,14 +4,14 @@ export function canSpeak():boolean {
   return typeof window!=='undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 }
 let current:SpeechSynthesisUtterance|null=null;
-export function speakWord(term:string):SpeechResult {
+export function speakWord(term:string,rate=0.88):SpeechResult {
   if(!canSpeak())return {ok:false,reason:'Speech playback is unavailable in this browser.'};
   if(!term.trim())return {ok:false,reason:'Enter a word before playing its pronunciation.'};
   try {
     const synth=window.speechSynthesis;
     synth.cancel();
     const utterance=new SpeechSynthesisUtterance(term.trim());
-    utterance.lang='en-US';utterance.rate=0.88;utterance.pitch=1;
+    utterance.lang='en-US';utterance.rate=rate;utterance.pitch=1;
     const voices=synth.getVoices();
     // Prefer an installed US English voice; avoid assuming all browsers
     // expose the same voice names or load voices synchronously.

@@ -73,3 +73,78 @@ The word library retains paired definitions and examples, thin meaning dividers,
 Shared appearance: src/polished.css. Navigation icons: src/components/NavIcon.tsx. Welcome area: src/components/Welcome.tsx.
 
 Validation: production build and automated tests. Browser visual verification unavailable in this environment.
+
+## Games
+
+The **Games** tab (formerly *Sentence game*) lists every game. Choose one to play; **All games** returns to the list. Each round has up to 10 words and ends with a score, and a wrong answer always shows the right one.
+
+- **The missing word**: the original sentence game, unchanged.
+- **Pick the meaning**: shows one of your words and five definitions; only one belongs to it. The other four come from your other words, preferring the same part of speech. Any word in a definition that would give the answer away (the quizzed word, the option's own word, and simple forms like *calmly* for terms of four or more letters) is hidden until you check. After checking, every option shows which word it belongs to, plus the correct definition and an example sentence when you have one. Press A–E (or 1–5) to pick by keyboard. Needs at least two different words with definitions; fewer than six words means fewer than five options.
+
+Architecture: `src/lib/gameText.ts` (shared masking, matching and shuffling), `src/lib/definitionGame.ts` (question building), `src/components/Games.tsx` (game list), `src/components/DefinitionGame.tsx`, `src/meaningGame.css`. Tests: `tests/definitionGame.test.mjs`.
+
+The header now reads *Lexicon* without the trailing period.
+
+## October 2026 interface upgrade
+
+### Tests
+The **Tests** tab builds a graded test from your words. Choose the question type (multiple choice, written, true or false, or mixed), what you answer with (terms, definitions, or both), which words (all or favorites) and how many questions. Answers are marked only when you submit; results show an A+ to F grade, every question with the right answer, and a retest of what you missed. Written definitions can't be machine-graded, so you mark those yourself and the grade updates as you do.
+
+### Home banner
+The banner at the top of the library features one of four activities, chosen at random on each visit and never the same twice in a row: The missing word, Pick the meaning, a test, or flashcards. It shows a real sentence or word from your library. The last pick is kept in `localStorage` (key `lexicon:last-featured`).
+
+### Editor
+Manage words is rebuilt: one card per word, meanings and examples on the left, pronunciation and related words on the right. Synonyms, antonyms and related forms are tags (type, then Enter); the link button on a tag holds an optional Merriam-Webster URL. All edits are still staged until **Save changes**.
+
+### Controls and copy
+Every dropdown is Lexicon's own (`src/components/Select.tsx`, keyboard accessible) instead of the browser's. Filler copy is gone; quotations from `src/lib/quotes.ts` appear in the sidebar and on the home screen instead. The sidebar quote is picked once per page load and only changes when you refresh; the home-screen quote changes on each library visit and never shares an author with the sidebar.
+
+### Files
+`src/lib/test.ts`, `src/lib/quotes.ts`, `src/lib/featured.ts`, `src/components/TestView.tsx`, `Select.tsx`, `Quote.tsx`, plus `components.css`, `editor.css`, `home.css`, `tests.css`. Unused CSS and the old `WordEditor.tsx` and `SearchPicker.tsx` were removed. Tests: `tests/test.test.mjs` (25 tests total).
+
+## Spell It, Profile and sharing
+
+### Spell It (Games)
+Hear a word through the browser's speech engine, then type its spelling. Each wrong attempt unlocks a clue: the first letter and length, then the meaning, then every other letter plus an example sentence with the word blanked. The fourth miss (or **Show the answer**) reveals it. The round ends with how many you spelled and how many on the first try. Without speech support, the meaning is shown from the start.
+
+### Profile
+A new **Profile** tab with your name (used only there and in files you share), current and longest streak, active days, days you added words, a one-year activity calendar (switch between active days and words added), and milestones.
+
+A day counts as **active** when you finish a game, submit a test, start flashcards, or save, add or import words. Opening the app alone doesn't count. The current streak survives until the end of today, so it isn't lost before you've had a chance to practice.
+
+Activity and your name are stored in `data/profile.json` (served at `/api/profile`), next to `data/vocabulary.json`. New words also record the date they were added (`addedAt`).
+
+### Sharing and importing
+**Download share file** saves your words (all or favorites) as `lexicon-<name>-<date>.json`. Favorites, ids and activity are not included. Where the browser supports it, **Share…** opens the system share sheet.
+
+**Add words from a file** accepts a dropped or chosen `.json` file: a Lexicon share file, `{ "words": [...] }`, or a plain list like `data/vocabulary.json`. Each word needs a `term` and a `definition` (or `senses`). You get a preview to accept all new words or pick some; words you already have are skipped. Imported files are treated as untrusted: 2 MB and 5,000 words maximum, every field type-checked and length-limited, unknown fields dropped, and only Merriam-Webster dictionary links kept.
+
+Files: `src/lib/spellGame.ts`, `src/lib/activity.ts`, `src/lib/dates.ts`, `src/lib/share.ts`, `src/components/SpellGame.tsx`, `src/components/Profile.tsx`, `src/spellGame.css`, `src/profile.css`. Tests: `tests/profile.test.mjs` (30 tests total).
+
+## Words-added feed, mascots and custom controls
+
+### Words added (Profile)
+A feed of every time you added words: how many at once, which words (up to 50 per entry, the first 8 shown with "+N more"), and whether you added them or accepted them from someone's file. Above it: how many times you've added words, the average per time, and the most at once. Entries are logged in `data/profile.json` under `events` (the latest 300). Words saved before this existed are grouped by the day they were added.
+
+### Mascots
+Each mascot has its own place: waving (home, The missing word), professor (Pick the meaning), studying (Profile, Spell It), test-taker (Tests), flashcards (Flashcards), and the standing cardinal (Games, empty library). `lexicon-waving.png` was resized from 1280 px to 640 px (850 KB to 225 KB).
+
+### No browser-drawn popups
+Hover hints use Lexicon's tooltip (`data-tip`) instead of the browser's `title` popup; the activity calendar has its own hover card. Show/hide sections use `Disclosure` instead of `<details>`, and flashcard selection uses `Checkbox` instead of native checkboxes (both in `src/components/Select.tsx`). The only system UI left is the file picker behind **Choose a file**, which browsers don't allow apps to replace; dragging a file onto the drop zone avoids it.
+
+## Visual design
+
+Lexicon is styled as a personal dictionary. The tokens and component styling live in `src/theme.css`, loaded last:
+
+- **Frame:** a dark forest sidebar (`--sidebar`), which also colours the editor's save bar and the phone browser bar.
+- **Type:** Fraunces for words, headings and numbers; DM Sans for interface text. Parts of speech and example sentences use Fraunces italic.
+- **Signature mark:** a marigold highlighter swipe (`--highlight`, class `.hl`) for "this is the one": the current page in the sidebar, the featured word on the home screen, the blank in a sentence, and the Save button.
+- **Controls:** solid buttons with a firm bottom edge; cards share one border colour and no drop shadows.
+
+Brand colours are CSS variables (`--ink`, `--brand`, `--brand-deep`, `--focus`, and so on) across all stylesheets, so the palette can change in one place.
+
+## Trophies
+
+Milestones are eight goals: words saved (1, 10, 50, 100), activity streaks (3, 7, 30 days) and finishing a test. Each one you reach becomes a trophy on your Profile, on a shelf under your name, as a bronze, silver or gold cup engraved with its number (`Trophy` in `src/components/Profile.tsx`). Sharing and importing still count as activity but aren't milestones.
+
+Your name displays as text, so it never clips and wraps when long; it turns into a text box only while you edit it.

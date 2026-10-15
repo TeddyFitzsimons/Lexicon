@@ -1,0 +1,26 @@
+.spell-stage{display:flex;flex-direction:column;align-items:center;gap:16px;margin:30px 0 22px;padding:34px 24px 30px;background:var(--surface);border:1px solid #d7e2cd;border-radius:25px;box-shadow:0 5px 0 #e3ead8;text-align:center}
+.spell-listen{display:flex;align-items:center;gap:18px;text-align:left}
+.spell-listen strong{display:block;font:700 20px 'DM Sans',sans-serif;color:var(--ink);margin-bottom:2px}
+.spell-play{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;border:0;background:var(--brand);color:#fff;box-shadow:0 5px 0 var(--brand-deep);cursor:pointer;transition:transform .12s}
+.spell-play:hover{background:var(--brand-hover)}
+.spell-play:active{transform:translateY(3px);box-shadow:0 2px 0 var(--brand-deep)}
+.spell-play:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.spell-noaudio{margin:0;max-width:44ch;font-size:14px;color:#94603a}
+.spell-pos{font:italic 400 15px var(--serif);color:#7f9274}
+.spell-pattern{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.spell-letter{display:grid;place-items:center;width:40px;height:48px;border-radius:9px;background:#eef4e6;border-bottom:3px solid #8aab72;font:700 24px 'DM Sans',sans-serif;color:var(--ink);text-transform:lowercase}
+.spell-letter.is-hidden{background:#f6f8f1;border-bottom-color:#cbd8bd}
+.spell-letter.is-revealed{background:#e3f0d6;border-bottom-color:#6f9a52}
+.spell-gap{width:16px}
+.spell-count{margin:-6px 0 0;font-size:12px;color:#7a8b70}
+.spell-clues{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding:16px 20px;background:#f1eef8;border:1px solid #e0daf0;border-radius:16px}
+.spell-clues p{margin:0;display:flex;flex-direction:column;gap:3px;font-size:15px;line-height:1.55;color:#3f3866}
+.spell-clues p>span:first-child{font-size:11px;font-weight:700;color:#7a7298}
+.spell-clues em{font-family:var(--serif)}
+.spell-form{display:flex;gap:10px}
+.spell-form .game-type-input{flex:1;letter-spacing:.06em}
+.spell-form .primary-button{min-width:110px}
+.spell-status{min-height:24px;margin-top:10px;font-size:13px;color:#94603a}
+@media(max-width:600px){.spell-letter{width:30px;height:38px;font-size:19px}.spell-play{width:68px;height:68px}.spell-form{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.spell-play{transition:none}}
+.spell-form .game-type-input:focus,.spell-form .game-type-input:focus-visible{outline:none!important;border-color:#9dbb85!important;box-shadow:0 0 0 4px #e3edd7!important}
