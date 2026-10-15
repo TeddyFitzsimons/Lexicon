@@ -28,7 +28,6 @@ body{background:var(--canvas);color:var(--ink);font-family:var(--sans);-webkit-f
 .site-header,.workspace-nav{background:var(--sidebar)!important;border:0!important}
 .page{border-left:0!important}
 .brand-name{font-family:var(--serif)!important;font-weight:600!important;font-size:27px!important;letter-spacing:-.02em!important;color:#F3EFE0!important}
-.brand-logo{filter:brightness(0) invert(.93)}
 .workspace-tabs{gap:4px!important}
 .workspace-tabs button{position:relative;isolation:isolate;color:var(--on-sidebar)!important;background:transparent!important;border:0!important;box-shadow:none!important;font-weight:600!important;transition:color .15s}
 .workspace-tabs button:hover{color:#fff!important;background:#ffffff0f!important}
@@ -143,3 +142,5 @@ body{background:var(--canvas);color:var(--ink);font-family:var(--sans);-webkit-f
 /* A quiet divider in the sidebar before Profile. */
 .nav-divider{display:block;height:1px;margin:8px 14px;background:#ffffff1f}
 @media(max-width:850px){.nav-divider{width:1px;height:28px;margin:auto 2px;align-self:center;flex:none}}
+/* The mark's dark cover disappears on the forest sidebar, so it sits on a small marigold disc. */
+.site-header .brand-logo{box-sizing:border-box;width:32px!important;height:32px!important;padding:1.5px;border-radius:50%;background:var(--highlight)}

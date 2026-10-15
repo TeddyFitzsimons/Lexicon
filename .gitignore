@@ -16,3 +16,9 @@ data/
 
 # Logs
 *.log
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Rust build output
+src-tauri/target/

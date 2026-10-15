@@ -65,7 +65,7 @@ function App(){
  function openManage(id:string|null=null,add=false){navigate('manage');setFocusId(id);setAddOnOpen(add)}
  const home=()=>navigate('library');
  return <div className="app-shell">
-  <header className="site-header"><div className="brand" onClick={home} role="button" tabIndex={0} aria-label="Lexicon, back to library" onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();home()}}}><img src="/lexicon-mark.png" className="brand-logo" alt=""/><div className="brand-name">Lexicon</div></div><div className="header-right"><span className="local-status"><span className="status-dot"/>Saved on this device</span></div></header>
+  <header className="site-header"><div className="brand"><img src="/lexicon-mark.png" className="brand-logo" alt=""/><div className="brand-name">Lexicon</div></div><div className="header-right"><span className="local-status"><span className="status-dot"/>Saved on this device</span></div></header>
   <main className="page">
    <nav className="workspace-nav" aria-label="Main navigation"><div className="workspace-tabs">{pages.map(item=><Fragment key={item.id}>{item.id==='profile'&&<span className="nav-divider" role="separator" aria-orientation="horizontal"/>}<button className={page===item.id?'selected':''} aria-current={page===item.id?'page':undefined} onClick={()=>navigate(item.id)}><NavIcon name={item.icon}/>{item.label}</button></Fragment>)}</div><Quote quote={pageQuote()} className="sidebar-quote workspace-caption"/></nav>
    {error&&<div className="error" role="alert">{error}</div>}{!loaded&&!error&&<div className="panel loading">Loading your words…</div>}
