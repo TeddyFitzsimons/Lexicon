@@ -298,3 +298,95 @@ footer code { font-size: 11px; }
 .manage-empty { padding:40px; color:#8b978e; text-align:center; }
 @media(max-width:900px){.manage-detail{grid-template-columns:1fr}.manage-table-header,.manage-row-top{grid-template-columns:minmax(120px,1.4fr) minmax(125px,1fr) 110px 80px;gap:8px}.manage-row-top{padding:12px}}
 @media(max-width:650px){.manage-heading{align-items:start;flex-direction:column}.manage-table-header{display:none}.manage-row-top{grid-template-columns:1fr 1fr}.manage-row-actions{justify-content:flex-start}.manage-detail{padding:15px}.manage-savebar{bottom:0;border-radius:10px 10px 0 0}}
+
+/* Library is one continuous document, not a paginated or virtualized list.
+   New cards are appended to the storage array, preserving insertion order. */
+.library-home .table-shell {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+.library-home .words-table tbody tr {
+  scroll-margin-top: 24px;
+}
+/* A balanced, tactile add action. The icon and label are optically centered. */
+.add-word-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 51px;
+  padding: 7px 13px 7px 9px;
+  border: 1px solid #28563f;
+  border-radius: 12px;
+  background: #28563f;
+  color: #fff;
+  font: 700 13px 'DM Sans', sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 3px 7px #1c402a12;
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+.add-word-button:hover {
+  background: #356b4e;
+  box-shadow: 0 7px 15px #1c402a20;
+  transform: translateY(-1px);
+}
+.add-word-button:active { transform: translateY(0) scale(.985); }
+.add-word-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #ffffff1d;
+}
+.add-word-arrow { color: #bdd3c2; font-size: 14px; margin-left: 5px; }
+.chronological-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  color: #748779;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  padding: 10px 4px;
+}
+.chronological-label span { color: #416a4d; font-size: 15px; }
+@media(max-width: 620px) {
+  .library-topline .add-word-button { align-self: flex-start; }
+  .chronological-label { order: 4; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .add-word-button { transition: none; }
+  .add-word-button:hover { transform: none; }
+}
+
+/* Pronunciation is a two-column detail, not an intrusive separate editor. */
+.pronunciation-fields { display:grid; gap:12px; padding:17px; border:1px solid #e1e9df; border-radius:12px; background:#f9fbf8; }
+.pronunciation-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.pronunciation-heading strong { font-size:13px; color:#344b3c; }
+.pronunciation-play { display:inline-flex; align-items:center; justify-content:center; gap:7px; border:1px solid #cdded1; background:white; border-radius:8px; padding:8px 11px; color:#326044; font-size:12px; font-weight:700; }
+.pronunciation-play:hover:not(:disabled) { background:#eff5ee; }
+.pronunciation-grid { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+.pronunciation-grid label { display:grid; gap:8px; font-size:12px; font-weight:700; }
+.pronunciation-grid input { min-width:0; }
+.pronunciation-foot { display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:11px; color:#8b968d; }
+.pronunciation-note { color:#58765e; font-size:11px; }
+.pronunciation-warning { color:#9d573b; font-size:11px; line-height:1.6; }
+.table-word .sound-button { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
+.pronunciation { display:block; margin-top:4px; color:#738579; font-size:12px; }
+@media(max-width:620px) { .pronunciation-grid { grid-template-columns:1fr; } .pronunciation-foot { align-items:flex-start; flex-direction:column; } }
+/* Full vocabulary content: no hidden definitions or sentence-count substitutes. */
+.definition-cell .full-meaning { margin-bottom: 15px; line-height: 1.65; }
+.definition-cell .full-meaning:last-child { margin-bottom: 0; }
+.examples-detail { display: grid; gap: 11px; min-width: 200px; }
+.examples-detail p { margin: 0; line-height: 1.6; color: #6c796f; font-style: italic; white-space: normal; }
+.no-examples { color: #a3aaa3; }
+.related-terms { display: grid; gap: 10px; }
+.related-term-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 38px; gap: 9px; align-items: center; }
+.related-term-row input { min-width: 0; }
+.manage-added-hint { color: #49745a; font-size: 12px; padding: 10px 0; }
+@media(max-width:650px){.related-term-row{grid-template-columns:1fr 38px}.related-term-row input:nth-child(2){grid-column:1}.related-term-row .icon-button{grid-column:2;grid-row:1 / 3}}
+
+.library-related{font-size:11px;line-height:1.6;margin-top:8px;color:#78867c;max-width:300px}.library-related strong{font-weight:700;color:#536d5b}.library-related a{color:#2c7050;text-decoration:underline;text-underline-offset:2px}.manage-add-another{margin:16px 0 5px}.words-table{table-layout:fixed}.words-table th:nth-child(1){width:24%}.words-table th:nth-child(2){width:14%}.words-table th:nth-child(3){width:30%}.words-table th:nth-child(4){width:25%}.words-table th:nth-child(5){width:7%}

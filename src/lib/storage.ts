@@ -10,11 +10,12 @@ export async function loadWords():Promise<Word[]> {
   if(!response.ok) throw new Error(await response.text());
   const data:unknown=await response.json();
   if(!Array.isArray(data)) throw new Error('Vocabulary file must contain an array');
-  let words=data.map(normalize);
+  const lookup=new Map(data.filter((x):x is {id:string;term:string}=>!!x&&typeof x.id==='string'&&typeof x.term==='string').map(x=>[x.id,x.term]));
+  let words=data.map(x=>normalize(x,lookup));
   // Migrate once from the earlier browser-only app if the disk file is empty.
   if(!words.length){
     const legacy=localStorage.getItem(oldKey);
-    if(legacy){const parsed:unknown=JSON.parse(legacy);if(Array.isArray(parsed)&&parsed.length){words=parsed.map(normalize);await saveWords(words);}}
+    if(legacy){const parsed:unknown=JSON.parse(legacy);if(Array.isArray(parsed)&&parsed.length){words=parsed.map(x=>normalize(x));await saveWords(words);}}
   }
   return words;
 }
