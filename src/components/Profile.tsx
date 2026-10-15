@@ -4,9 +4,13 @@ import {MAX_NAME,batchStats,calendarWeeks,level,milestones,streaks,wordBatches,t
 import {MAX_FILE_BYTES,buildShareFile,parseImport,shareFileName,toLibraryWords,type ParsedImport} from '../lib/share';
 import {fromDayKey} from '../lib/dates';
 import {Disclosure,Segmented} from './Select';
+import {backupFileName,buildBackup,parseRestore,MAX_RESTORE_BYTES,type Restore} from '../lib/backup';
+import {isDesktop,saveTextFile} from '../lib/platform';
+import {showDataFolder} from '../lib/storage';
 import '../profile.css';
 
-type Props={words:Word[];profile:ProfileData;onRename:(name:string)=>void;onShared:()=>void;onImport:(words:Word[],from:string)=>Promise<boolean>};
+export type RestoreData={words?:Word[];profile?:ProfileData};
+type Props={words:Word[];profile:ProfileData;onRename:(name:string)=>void;onShared:()=>void;onImport:(words:Word[],from:string)=>Promise<boolean>;onRestore:(data:RestoreData)=>Promise<boolean>};
 const WEEKS=52;
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const longDate=(key:string)=>fromDayKey(key).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
@@ -62,16 +66,19 @@ function ActivityCalendar({profile}:{profile:ProfileData}){
 function Share({words,name,onShared}:{words:Word[];name:string;onShared:()=>void}){
  const [scope,setScope]=useState<'all'|'favorites'>('all');
  const chosen=scope==='all'?words:words.filter(w=>w.favorite);
- const make=()=>{const json=JSON.stringify(buildShareFile(chosen,name),null,2);return new File([json],shareFileName(name),{type:'application/json'})};
- const canNativeShare=typeof navigator!=='undefined'&&!!navigator.canShare&&navigator.canShare({files:[new File(['{}'],'x.json',{type:'application/json'})]});
- function download(){const file=make();const url=URL.createObjectURL(file);const a=document.createElement('a');a.href=url;a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);onShared()}
+ const json=()=>JSON.stringify(buildShareFile(chosen,name),null,2);
+ const make=()=>new File([json()],shareFileName(name),{type:'application/json'});
+ const canNativeShare=!isDesktop()&&typeof navigator!=='undefined'&&!!navigator.canShare&&navigator.canShare({files:[new File(['{}'],'x.json',{type:'application/json'})]});
+ const [error,setError]=useState('');
+ async function download(){setError('');try{if(await saveTextFile(shareFileName(name),json()))onShared()}catch(e){setError(`Couldn’t save the file: ${e instanceof Error?e.message:String(e)}`)}}
  async function share(){try{await navigator.share({files:[make()],title:'My Lexicon'});onShared()}catch{/* closed the share sheet */}}
  return <section className="pf-card" aria-labelledby="share-title">
   <h2 id="share-title">Share your Lexicon</h2>
   <p className="pf-text">Send your words as a file. Whoever opens it in their Lexicon can add them to their library. Favorites and your activity stay private.</p>
   <Segmented label="Words to share" value={scope} onChange={setScope} options={[{value:'all',label:'All words',detail:words.length},{value:'favorites',label:'Favorites',detail:words.filter(w=>w.favorite).length}]}/>
-  <div className="pf-actions"><button className="primary-button" disabled={!chosen.length} onClick={download}>Download share file</button>{canNativeShare&&<button className="quiet-button" disabled={!chosen.length} onClick={()=>void share()}>Share…</button>}</div>
+  <div className="pf-actions"><button className="primary-button" disabled={!chosen.length} onClick={()=>void download()}>{isDesktop()?'Save share file…':'Download share file'}</button>{canNativeShare&&<button className="quiet-button" disabled={!chosen.length} onClick={()=>void share()}>Share…</button>}</div>
   {!name.trim()&&<p className="pf-note">Add your name above so friends know who it’s from.</p>}
+  {error&&<p className="pf-error" role="alert">{error}</p>}
  </section>;
 }
 
@@ -126,6 +133,60 @@ function Import({words,onImport}:{words:Word[];onImport:(w:Word[],from:string)=>
     <button className="primary-button" disabled={!fresh.length} onClick={()=>void accept(new Set(fresh.map(i=>i.word.term)))}>Accept all {fresh.length}</button>
     {picked.size>0&&picked.size<fresh.length&&<button className="quiet-button" onClick={()=>void accept(picked)}>Add {picked.size} selected</button>}
     <button className="ed-text-button" onClick={()=>setParsed(null)}>Cancel</button>
+   </div>
+  </div>}
+ </section>;
+}
+
+const countWords=(n:number)=>`${n} ${n===1?'word':'words'}`;
+const shortDate=(iso:string)=>new Date(iso).toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'});
+
+/** Everything on this device in one file, and the way back. Restoring replaces; it never merges. */
+function Backup({words,profile,onRestore}:{words:Word[];profile:ProfileData;onRestore:(data:RestoreData)=>Promise<boolean>}){
+ const desktop=isDesktop();
+ const [pending,setPending]=useState<Extract<Restore,{ok:true}>|null>(null);
+ const [error,setError]=useState(''),[done,setDone]=useState(''),[working,setWorking]=useState(false);
+ const input=useRef<HTMLInputElement>(null);
+ const fail=(what:string,e:unknown)=>setError(`${what}: ${e instanceof Error?e.message:String(e)}`);
+ async function backUp(){
+  setError('');setDone('');
+  try{if(await saveTextFile(backupFileName(),JSON.stringify(buildBackup(words,profile),null,2)))setDone(`Backed up ${countWords(words.length)} and your activity.`)}
+  catch(e){fail('Couldn’t save the backup',e)}
+ }
+ async function choose(list:FileList|null){
+  setError('');setDone('');
+  const files=[...(list||[])];if(!files.length)return;
+  if(files.reduce((n,f)=>n+f.size,0)>MAX_RESTORE_BYTES){setError('Those files are too large to be a Lexicon backup.');return}
+  const result=parseRestore(await Promise.all(files.map(async f=>({name:f.name,text:await f.text()}))));
+  if(result.ok)setPending(result);else setError(result.error);
+ }
+ async function confirm(){
+  if(!pending)return;setWorking(true);
+  const ok=await onRestore({words:pending.words,profile:pending.profile});
+  setWorking(false);setPending(null);
+  if(ok)setDone(pending.words?`Restored ${countWords(pending.words.length)}${pending.profile?' and your activity':''}.`:'Restored your activity.');
+ }
+ const incoming=pending?[pending.words&&countWords(pending.words.length),pending.profile&&`activity from ${Object.keys(pending.profile.days).length} ${Object.keys(pending.profile.days).length===1?'day':'days'}`].filter(Boolean).join(' and '):'';
+ const replaced=pending?[pending.words&&`the ${countWords(words.length)}`,pending.profile&&'the activity and streaks'].filter(Boolean).join(' and '):'';
+ return <section className="pf-card pf-backup" aria-labelledby="backup-title">
+  <h2 id="backup-title">Back up and restore</h2>
+  <p className="pf-text">A backup is one file with every word, your favorites, your activity and your streaks. Keep it somewhere safe. Restoring a backup replaces what’s on this device.</p>
+  <div className="pf-actions">
+   <button className="primary-button" onClick={()=>void backUp()}>{desktop?'Back up…':'Download backup'}</button>
+   <button className="quiet-button" onClick={()=>input.current?.click()}>Restore from backup</button>
+   {desktop&&<button className="ed-text-button" onClick={()=>void showDataFolder().catch(e=>fail('Couldn’t open the folder',e))}>Show data folder</button>}
+   <input ref={input} type="file" multiple accept=".json,application/json" hidden onChange={e=>{void choose(e.target.files);e.target.value=''}}/>
+  </div>
+  <Disclosure label="Moving from the web version?" className="pf-format">
+   <p>Choose <code>vocabulary.json</code> and <code>profile.json</code> together from the <code>data</code> folder of your old Lexicon. Your words keep their favorites and dates, and your streaks come with them.</p>
+  </Disclosure>
+  {error&&<p className="pf-error" role="alert">{error}</p>}
+  {done&&<p className="pf-done" role="status">{done}</p>}
+  {pending&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget&&!working)setPending(null)}} onKeyDown={e=>{if(e.key==='Escape'&&!working)setPending(null)}}>
+   <div className="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="restore-title" aria-describedby="restore-body">
+    <h2 id="restore-title">Replace what’s here?</h2>
+    <p id="restore-body">This brings in {incoming}{pending.exportedAt?`, backed up ${shortDate(pending.exportedAt)}`:''}. It replaces {replaced} on this device.{pending.words&&!pending.profile?' Your activity stays as it is.':''}{!pending.words&&pending.profile?' Your words stay as they are.':''}{desktop?' A copy of what you have now is kept in the data folder.':''}</p>
+    <div className="dialog-actions"><button autoFocus className="quiet-button" disabled={working} onClick={()=>setPending(null)}>Keep what I have</button><button className="primary-button" disabled={working} onClick={()=>void confirm()}>Replace</button></div>
    </div>
   </div>}
  </section>;
@@ -189,7 +250,7 @@ function TrophyShelf({earned}:{earned:Milestone[]}){
 }
 
 /** Name, activity and sharing. The name is only used here and in files you share. */
-export function Profile({words,profile,onRename,onShared,onImport}:Props){
+export function Profile({words,profile,onRename,onShared,onImport,onRestore}:Props){
  const active=streaks(profile,'active'),added=streaks(profile,'added');
  const badges=milestones(profile,words.length);
  const earned=badges.filter(b=>b.earned).length;
@@ -211,5 +272,6 @@ export function Profile({words,profile,onRename,onShared,onImport}:Props){
    <ul className="pf-badges">{badges.map(b=><li key={b.id} className={b.earned?'is-earned':''}><span className="pf-badge-mark" aria-hidden="true">{b.earned?<Trophy milestone={b} size={26}/>:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>}</span><span><b>{b.title}</b><small>{b.detail}</small></span><span className="sr-only">{b.earned?'Earned':'Not yet'}</span></li>)}</ul>
   </section>
   <div className="pf-two"><Share words={words} name={profile.name} onShared={onShared}/><Import words={words} onImport={onImport}/></div>
+  <Backup words={words} profile={profile} onRestore={onRestore}/>
  </section>;
 }

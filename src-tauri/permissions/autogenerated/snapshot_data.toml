@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-snapshot-data"
+description = "Enables the snapshot_data command without any pre-configured scope."
+commands.allow = ["snapshot_data"]
+
+[[permission]]
+identifier = "deny-snapshot-data"
+description = "Denies the snapshot_data command without any pre-configured scope."
+commands.deny = ["snapshot_data"]

@@ -5,12 +5,13 @@ import {ManageWords} from './components/ManageWords';
 import {StudyView} from './components/StudyView';
 import {Games,type GameId} from './components/Games';
 import {TestView} from './components/TestView';
-import {Profile} from './components/Profile';
+import {Profile,type RestoreData} from './components/Profile';
 import {Welcome} from './components/Welcome';
 import {NavIcon} from './components/NavIcon';
 import {Quote} from './components/Quote';
 import {pageQuote} from './lib/quotes';
-import {loadProfile,loadWords,saveProfile,saveWords} from './lib/storage';
+import {loadProfile,loadWords,saveProfile,saveWords,snapshotData} from './lib/storage';
+import {installDesktopBehaviour} from './lib/platform';
 import {emptyProfile,logBatch,record,type ActivityKind,type Profile as ProfileData} from './lib/activity';
 import type {NavIconName} from './components/NavIcon';
 import {withoutWord,type Word} from './lib/words';
@@ -20,6 +21,7 @@ import './game.css';
 import './polished.css';
 import './components.css';
 import './theme.css';
+import './fonts.css';
 
 type Page='library'|'manage'|'study'|'game'|'test'|'profile';
 const pages:{id:Page;label:string;icon:NavIconName}[]=[
@@ -33,10 +35,13 @@ function App(){
  const [deleteId,setDeleteId]=useState<string|null>(null),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [profile,setProfile]=useState<ProfileData>(emptyProfile);
  const profileRef=useRef(profile);
+ /** Until the saved profile has loaded, nothing may write over it, or a failed load would erase your streaks. */
+ const profileLoaded=useRef(false);
  useEffect(()=>{loadWords().then(data=>{setWords(data);setLoaded(true)}).catch(e=>setError(`Couldn’t load your words: ${String(e)}`))},[]);
- useEffect(()=>{loadProfile().then(p=>{profileRef.current=p;setProfile(p)}).catch(e=>setError(`Couldn’t load your profile: ${String(e)}`))},[]);
+ useEffect(()=>{loadProfile().then(p=>{profileRef.current=p;profileLoaded.current=true;setProfile(p)}).catch(e=>setError(`Couldn’t load your profile: ${String(e)}`))},[]);
  /** Applies a change to the profile and writes it to data/profile.json. Uses a ref so rapid events never drop each other. */
  function updateProfile(change:(p:ProfileData)=>ProfileData){
+  if(!profileLoaded.current)return;
   const next=change(profileRef.current);if(next===profileRef.current)return;
   profileRef.current=next;setProfile(next);
   saveProfile(next).catch(e=>setError(`Couldn’t save your profile: ${String(e)}`));
@@ -50,6 +55,12 @@ function App(){
   if(added)updateProfile(p=>logBatch(p,imported?'imported':'added',newTerms,from));else if(!imported)track('edited');
   return true}catch(e){setError(`Save failed: ${String(e)}`);return false}finally{setBusy(false)}}
  /** Every navigation is a fresh visit: pages remount, so the banner and quotes change. */
+ /** Replaces the library and/or profile with a backup. A snapshot of the current data is taken first. */
+ async function restore(data:RestoreData){setBusy(true);setError('');try{
+  await snapshotData();
+  if(data.words){await saveWords(data.words);setWords(data.words)}
+  if(data.profile){await saveProfile(data.profile);profileRef.current=data.profile;profileLoaded.current=true;setProfile(data.profile)}
+  setNotice('Restored');return true}catch(e){setError(`Restore failed: ${String(e)}`);return false}finally{setBusy(false)}}
  function navigate(next:Page,options:{game?:GameId}={}){setPage(next);setGame(options.game??null);setFocusId(null);setAddOnOpen(false);setVisit(v=>v+1);window.scrollTo({top:0,behavior:'instant'})}
  function openManage(id:string|null=null,add=false){navigate('manage');setFocusId(id);setAddOnOpen(add)}
  const home=()=>navigate('library');
@@ -63,10 +74,11 @@ function App(){
    {loaded&&page==='study'&&<StudyView key={visit} words={words} onStart={()=>track('studied')}/>}
    {loaded&&page==='game'&&<Games key={visit} initial={game} words={words} onAdd={()=>openManage(null,true)} onFinish={()=>track('practiced')}/>}
    {loaded&&page==='test'&&<TestView key={visit} words={words} onAdd={()=>openManage(null,true)} onSubmit={()=>track('tested')}/>}
-   {loaded&&page==='profile'&&<Profile key={visit} words={words} profile={profile} onRename={name=>updateProfile(p=>({...p,name}))} onShared={()=>track('shared')} onImport={(incoming,from)=>persist([...words,...incoming],true,from)}/>}
+   {loaded&&page==='profile'&&<Profile key={visit} words={words} profile={profile} onRename={name=>updateProfile(p=>({...p,name}))} onShared={()=>track('shared')} onImport={(incoming,from)=>persist([...words,...incoming],true,from)} onRestore={restore}/>}
    {deleteId&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setDeleteId(null)}} onKeyDown={e=>{if(e.key==='Escape')setDeleteId(null)}}><div className="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-title"><h2 id="delete-title">Delete {words.find(w=>w.id===deleteId)?.term||'this word'}?</h2><p>This removes it from your library for good.</p><div className="dialog-actions"><button autoFocus className="quiet-button" onClick={()=>setDeleteId(null)}>Keep it</button><button className="delete-confirm" disabled={busy} onClick={()=>void persist(withoutWord(words,deleteId)).then(ok=>{if(ok)setDeleteId(null)})}>Delete</button></div></div></div>}
    <div role="status" aria-live="polite">{notice&&<div className="save-toast">{notice}</div>}</div>
   </main>
  </div>;
 }
+installDesktopBehaviour();
 createRoot(document.getElementById('root')!).render(<App/>);

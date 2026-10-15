@@ -57,4 +57,5 @@ function localData(): Plugin {
   const profile = jsonFileRoute('/api/profile', 'profile.json', '{"name":"","days":{}}', isProfile, 1_000_000);
   return { name: 'local-data-storage', configureServer(server) { words(server); profile(server); } };
 }
-export default defineConfig({ plugins: [react(), localData()], server:{host:'127.0.0.1',port:5173,strictPort:true} });
+// Port and host are fixed so the desktop app's dev window (src-tauri/tauri.conf.json) can find the dev server.
+export default defineConfig({ plugins: [react(), localData()], clearScreen: false, server:{host:'127.0.0.1',port:5173,strictPort:true} });

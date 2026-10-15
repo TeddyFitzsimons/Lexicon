@@ -1,0 +1,32 @@
+[package]
+name = "lexicon"
+version = "0.0.0" # The app's version comes from package.json via tauri.conf.json.
+description = "Lexicon: a personal vocabulary app"
+authors = ["Teddy Fitzsimons"]
+license = "MIT"
+repository = "https://github.com/TeddyFitzsimons/Vocabulary-Learner"
+edition = "2021"
+rust-version = "1.82"
+publish = false
+
+[lib]
+# The _lib suffix avoids a name clash with the binary on Windows.
+name = "lexicon_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-single-instance = "2"
+serde_json = { version = "1", features = ["preserve_order"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

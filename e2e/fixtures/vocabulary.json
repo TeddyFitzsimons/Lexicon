@@ -1,0 +1,451 @@
+[
+  {
+    "id": "2c54c086-e0ae-4bc1-bf36-0d8962e5edcc",
+    "term": "ephemeral",
+    "definition": "Lasting for a very short time.",
+    "senses": [
+      {
+        "id": "2c1a6ca6-1f53-4d54-9ea0-655366a3564f",
+        "definition": "Lasting for a very short time.",
+        "examples": [
+          "The ephemeral beauty of the cherry blossoms drew crowds every spring."
+        ]
+      }
+    ],
+    "partOfSpeech": "Adjective",
+    "pronunciation": "əˈfɛm(ə)rəl",
+    "readablePronunciation": "ih-FEM-er-uhl",
+    "readableManuallyEdited": false,
+    "examples": [
+      "The ephemeral beauty of the cherry blossoms drew crowds every spring."
+    ],
+    "synonyms": [
+      {
+        "term": "fleeting",
+        "url": "https://www.merriam-webster.com/dictionary/fleeting"
+      },
+      {
+        "term": "transient",
+        "url": "https://www.merriam-webster.com/dictionary/transient"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "permanent",
+        "url": "https://www.merriam-webster.com/dictionary/permanent"
+      }
+    ],
+    "relatedForms": [],
+    "example": "The ephemeral beauty of the cherry blossoms drew crowds every spring.",
+    "favorite": true,
+    "addedAt": "2026-09-05"
+  },
+  {
+    "id": "b0f59ce2-ecd8-411a-8c6d-b2d5a30543c6",
+    "term": "laconic",
+    "definition": "Using very few words.",
+    "senses": [
+      {
+        "id": "fd227642-443a-497e-a06f-f2e1dddc0747",
+        "definition": "Using very few words.",
+        "examples": [
+          "His laconic reply ended the conversation."
+        ]
+      }
+    ],
+    "partOfSpeech": "Adjective",
+    "pronunciation": "ləˈkɑnɪk",
+    "readablePronunciation": "luh-KAH-nik",
+    "readableManuallyEdited": false,
+    "examples": [
+      "His laconic reply ended the conversation."
+    ],
+    "synonyms": [
+      {
+        "term": "terse",
+        "url": "https://www.merriam-webster.com/dictionary/terse"
+      },
+      {
+        "term": "succinct",
+        "url": "https://www.merriam-webster.com/dictionary/succinct"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "verbose",
+        "url": "https://www.merriam-webster.com/dictionary/verbose"
+      }
+    ],
+    "relatedForms": [],
+    "example": "His laconic reply ended the conversation.",
+    "favorite": false,
+    "addedAt": "2026-09-07"
+  },
+  {
+    "id": "d30a679a-53b9-4237-af8e-60386c77b4eb",
+    "term": "perspicacious",
+    "definition": "Having a ready insight into and understanding of things.",
+    "senses": [
+      {
+        "id": "c7a05aaa-c871-4d48-8b44-91962191d459",
+        "definition": "Having a ready insight into and understanding of things.",
+        "examples": [
+          "A perspicacious editor spotted the flaw at once."
+        ]
+      }
+    ],
+    "partOfSpeech": "Adjective",
+    "pronunciation": "ˌpərspəˈkeɪʃəs",
+    "readablePronunciation": "pur-spuh-KAY-shuhs",
+    "readableManuallyEdited": false,
+    "examples": [
+      "A perspicacious editor spotted the flaw at once."
+    ],
+    "synonyms": [
+      {
+        "term": "shrewd",
+        "url": "https://www.merriam-webster.com/dictionary/shrewd"
+      },
+      {
+        "term": "astute",
+        "url": "https://www.merriam-webster.com/dictionary/astute"
+      }
+    ],
+    "antonyms": [],
+    "relatedForms": [],
+    "example": "A perspicacious editor spotted the flaw at once.",
+    "favorite": true,
+    "addedAt": "2026-09-12"
+  },
+  {
+    "id": "b496e1ad-3ecb-45c7-b8a7-307c5209f0db",
+    "term": "obfuscate",
+    "definition": "To make obscure, unclear, or unintelligible.",
+    "senses": [
+      {
+        "id": "c3c02510-4ebf-4d60-9a02-3d055d8adf2a",
+        "definition": "To make obscure, unclear, or unintelligible.",
+        "examples": [
+          "The report seemed designed to obfuscate the real costs."
+        ]
+      }
+    ],
+    "partOfSpeech": "Verb",
+    "pronunciation": "ˈɑbfəˌskeɪt",
+    "readablePronunciation": "AHB-fuh-skayt",
+    "readableManuallyEdited": false,
+    "examples": [
+      "The report seemed designed to obfuscate the real costs."
+    ],
+    "synonyms": [
+      {
+        "term": "obscure",
+        "url": "https://www.merriam-webster.com/dictionary/obscure"
+      },
+      {
+        "term": "muddle",
+        "url": "https://www.merriam-webster.com/dictionary/muddle"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "clarify",
+        "url": "https://www.merriam-webster.com/dictionary/clarify"
+      }
+    ],
+    "relatedForms": [],
+    "example": "The report seemed designed to obfuscate the real costs.",
+    "favorite": false,
+    "addedAt": "2026-09-15"
+  },
+  {
+    "id": "56322405-f6ed-4a06-ac79-5311bc2d0b10",
+    "term": "sonder",
+    "definition": "The realization that each passerby has a life as vivid and complex as your own.",
+    "senses": [
+      {
+        "id": "dde79d5f-6313-4bb9-b286-244df594f758",
+        "definition": "The realization that each passerby has a life as vivid and complex as your own.",
+        "examples": [
+          "Waiting on the platform, she felt a wave of sonder."
+        ]
+      }
+    ],
+    "partOfSpeech": "Noun",
+    "pronunciation": "ˈsɑndər",
+    "readablePronunciation": "SAHN-der",
+    "readableManuallyEdited": false,
+    "examples": [
+      "Waiting on the platform, she felt a wave of sonder."
+    ],
+    "synonyms": [],
+    "antonyms": [],
+    "relatedForms": [],
+    "example": "Waiting on the platform, she felt a wave of sonder.",
+    "favorite": false,
+    "addedAt": "2026-09-21"
+  },
+  {
+    "id": "3b8ba2d6-0f26-4523-bd18-336289ee7d39",
+    "term": "quixotic",
+    "definition": "Exceedingly idealistic; unrealistic and impractical.",
+    "senses": [
+      {
+        "id": "b0cc3968-3bbd-4f0d-85f6-a434a5f0e341",
+        "definition": "Exceedingly idealistic; unrealistic and impractical.",
+        "examples": [
+          "It was a quixotic plan to restore the old lighthouse alone."
+        ]
+      }
+    ],
+    "partOfSpeech": "Adjective",
+    "pronunciation": "kwɪkˈsɑtɪk",
+    "readablePronunciation": "kwik-SAH-tik",
+    "readableManuallyEdited": false,
+    "examples": [
+      "It was a quixotic plan to restore the old lighthouse alone."
+    ],
+    "synonyms": [
+      {
+        "term": "idealistic",
+        "url": "https://www.merriam-webster.com/dictionary/idealistic"
+      },
+      {
+        "term": "romantic",
+        "url": "https://www.merriam-webster.com/dictionary/romantic"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "pragmatic",
+        "url": "https://www.merriam-webster.com/dictionary/pragmatic"
+      }
+    ],
+    "relatedForms": [],
+    "example": "It was a quixotic plan to restore the old lighthouse alone.",
+    "favorite": false,
+    "addedAt": "2026-09-25"
+  },
+  {
+    "id": "27858a6d-893c-48f6-8745-57c41d6d3112",
+    "term": "mellifluous",
+    "definition": "Sweet or musical; pleasant to hear.",
+    "senses": [
+      {
+        "id": "720f0454-f245-4da2-a4b8-bfbf1f9dd0d5",
+        "definition": "Sweet or musical; pleasant to hear.",
+        "examples": [
+          "Her mellifluous voice filled the small hall."
+        ]
+      }
+    ],
+    "partOfSpeech": "Adjective",
+    "pronunciation": "məˈlɪfluəs",
+    "readablePronunciation": "muh-LIF-loo-uhs",
+    "readableManuallyEdited": false,
+    "examples": [
+      "Her mellifluous voice filled the small hall."
+    ],
+    "synonyms": [
+      {
+        "term": "dulcet",
+        "url": "https://www.merriam-webster.com/dictionary/dulcet"
+      },
+      {
+        "term": "honeyed",
+        "url": "https://www.merriam-webster.com/dictionary/honeyed"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "harsh",
+        "url": "https://www.merriam-webster.com/dictionary/harsh"
+      }
+    ],
+    "relatedForms": [],
+    "example": "Her mellifluous voice filled the small hall.",
+    "favorite": true,
+    "addedAt": "2026-10-01"
+  },
+  {
+    "id": "28b2845f-51ff-4fce-b25e-f7f5721e71ca",
+    "term": "ameliorate",
+    "definition": "To make something bad or unsatisfactory better.",
+    "senses": [
+      {
+        "id": "beca76ad-b189-40a9-b50b-f20fb54a3037",
+        "definition": "To make something bad or unsatisfactory better.",
+        "examples": [
+          "New lighting did much to ameliorate the gloomy corridor."
+        ]
+      }
+    ],
+    "partOfSpeech": "Verb",
+    "pronunciation": "əˈmiljəˌreɪt",
+    "readablePronunciation": "uh-MEEL-yuh-rayt",
+    "readableManuallyEdited": false,
+    "examples": [
+      "New lighting did much to ameliorate the gloomy corridor."
+    ],
+    "synonyms": [
+      {
+        "term": "improve",
+        "url": "https://www.merriam-webster.com/dictionary/improve"
+      },
+      {
+        "term": "alleviate",
+        "url": "https://www.merriam-webster.com/dictionary/alleviate"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "worsen",
+        "url": "https://www.merriam-webster.com/dictionary/worsen"
+      }
+    ],
+    "relatedForms": [],
+    "example": "New lighting did much to ameliorate the gloomy corridor.",
+    "favorite": false,
+    "addedAt": "2026-10-06"
+  },
+  {
+    "id": "2cdf5365-74b8-462b-b1ea-0c4b02696671",
+    "term": "serendipity",
+    "definition": "The occurrence of events by chance in a happy way.",
+    "senses": [
+      {
+        "id": "7df17fe8-820e-4dec-81a7-7bb8d533be40",
+        "definition": "The occurrence of events by chance in a happy way.",
+        "examples": [
+          "By pure serendipity, they met again in Lisbon."
+        ]
+      }
+    ],
+    "partOfSpeech": "Noun",
+    "pronunciation": "ˌsɛrənˈdɪpədi",
+    "readablePronunciation": "ser-uhn-DIP-uh-dee",
+    "readableManuallyEdited": false,
+    "examples": [
+      "By pure serendipity, they met again in Lisbon."
+    ],
+    "synonyms": [
+      {
+        "term": "chance",
+        "url": "https://www.merriam-webster.com/dictionary/chance"
+      },
+      {
+        "term": "fortune",
+        "url": "https://www.merriam-webster.com/dictionary/fortune"
+      }
+    ],
+    "antonyms": [],
+    "relatedForms": [],
+    "example": "By pure serendipity, they met again in Lisbon.",
+    "favorite": false,
+    "addedAt": "2026-10-09"
+  },
+  {
+    "id": "edc832aa-2e69-4314-9f41-148760a97a8c",
+    "term": "petrichor",
+    "definition": "A pleasant smell that accompanies the first rain after a dry spell.",
+    "senses": [
+      {
+        "id": "3f0d106d-cb46-4235-aa8d-db2ce3d07741",
+        "definition": "A pleasant smell that accompanies the first rain after a dry spell.",
+        "examples": [
+          "The petrichor rose from the warm pavement."
+        ]
+      }
+    ],
+    "partOfSpeech": "Noun",
+    "pronunciation": "ˈpɛtrɪˌkɔr",
+    "readablePronunciation": "PE-trih-kor",
+    "readableManuallyEdited": false,
+    "examples": [
+      "The petrichor rose from the warm pavement."
+    ],
+    "synonyms": [],
+    "antonyms": [],
+    "relatedForms": [],
+    "example": "The petrichor rose from the warm pavement.",
+    "favorite": false,
+    "addedAt": "2026-10-12"
+  },
+  {
+    "id": "6e6d54ad-cd21-49eb-aae0-116e59751e4f",
+    "term": "ineffable",
+    "definition": "Too great or extreme to be expressed in words.",
+    "senses": [
+      {
+        "id": "c9ddfcdc-7605-4957-a4d3-0e12010fcef7",
+        "definition": "Too great or extreme to be expressed in words.",
+        "examples": [
+          "The view from the summit had an ineffable calm."
+        ]
+      }
+    ],
+    "partOfSpeech": "Adjective",
+    "pronunciation": "ɪnˈɛfəbəl",
+    "readablePronunciation": "in-EF-uh-buhl",
+    "readableManuallyEdited": false,
+    "examples": [
+      "The view from the summit had an ineffable calm."
+    ],
+    "synonyms": [
+      {
+        "term": "indescribable",
+        "url": "https://www.merriam-webster.com/dictionary/indescribable"
+      },
+      {
+        "term": "inexpressible",
+        "url": "https://www.merriam-webster.com/dictionary/inexpressible"
+      }
+    ],
+    "antonyms": [],
+    "relatedForms": [],
+    "example": "The view from the summit had an ineffable calm.",
+    "favorite": false,
+    "addedAt": "2026-10-14"
+  },
+  {
+    "id": "df8917b8-6da6-4daf-b017-fd10599a3519",
+    "term": "equanimity",
+    "definition": "Mental calmness and evenness of temper, especially in a difficult situation.",
+    "senses": [
+      {
+        "id": "fd024de7-eb46-4388-b35c-8ecca4193152",
+        "definition": "Mental calmness and evenness of temper, especially in a difficult situation.",
+        "examples": [
+          "She accepted the news with equanimity."
+        ]
+      }
+    ],
+    "partOfSpeech": "Noun",
+    "pronunciation": "ˌikwəˈnɪmədi",
+    "readablePronunciation": "ee-kwuh-NIM-uh-dee",
+    "readableManuallyEdited": false,
+    "examples": [
+      "She accepted the news with equanimity."
+    ],
+    "synonyms": [
+      {
+        "term": "composure",
+        "url": "https://www.merriam-webster.com/dictionary/composure"
+      },
+      {
+        "term": "poise",
+        "url": "https://www.merriam-webster.com/dictionary/poise"
+      }
+    ],
+    "antonyms": [
+      {
+        "term": "anxiety",
+        "url": "https://www.merriam-webster.com/dictionary/anxiety"
+      }
+    ],
+    "relatedForms": [],
+    "example": "She accepted the news with equanimity.",
+    "favorite": false,
+    "addedAt": "2026-10-15"
+  }
+]

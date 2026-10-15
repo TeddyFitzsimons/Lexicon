@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-load-words"
+description = "Enables the load_words command without any pre-configured scope."
+commands.allow = ["load_words"]
+
+[[permission]]
+identifier = "deny-load-words"
+description = "Denies the load_words command without any pre-configured scope."
+commands.deny = ["load_words"]

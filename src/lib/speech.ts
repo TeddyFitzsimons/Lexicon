@@ -5,7 +5,7 @@ export function canSpeak():boolean {
 }
 let current:SpeechSynthesisUtterance|null=null;
 export function speakWord(term:string,rate=0.88):SpeechResult {
-  if(!canSpeak())return {ok:false,reason:'Speech playback is unavailable in this browser.'};
+  if(!canSpeak())return {ok:false,reason:'Speech playback isn’t available on this device.'};
   if(!term.trim())return {ok:false,reason:'Enter a word before playing its pronunciation.'};
   try {
     const synth=window.speechSynthesis;
@@ -24,5 +24,5 @@ export function speakWord(term:string,rate=0.88):SpeechResult {
     current=utterance;
     synth.speak(utterance);
     return {ok:true};
-  }catch {return {ok:false,reason:'Unable to start speech playback. Check your browser voice settings.'};}
+  }catch {return {ok:false,reason:'Unable to start speech playback. Check the voices installed on this computer.'};}
 }
