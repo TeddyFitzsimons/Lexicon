@@ -1,1 +1,0 @@
-{"root":["./src/main.tsx","./src/components/managewords.tsx","./src/components/pronunciationfields.tsx","./src/components/relatedterms.tsx","./src/components/searchpicker.tsx","./src/components/studyview.tsx","./src/components/wordeditor.tsx","./src/components/wordlibrary.tsx","./src/lib/ipa.ts","./src/lib/speech.ts","./src/lib/storage.ts","./src/lib/words.ts"],"version":"5.9.3"}
