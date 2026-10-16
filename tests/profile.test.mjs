@@ -42,7 +42,9 @@ test('share files round-trip and strip private fields',()=>{
  assert.deepEqual(parsed.items.map(i=>[i.word.term,i.duplicate]),[['placid',false],['brisk',true]]);
  const added=toLibraryWords([parsed.items[0].word]);
  assert.equal(added[0].term,'placid');assert.equal(added[0].senses[0].examples[0],'A placid lake.');assert.equal(added[0].favorite,false);assert.match(added[0].addedAt,/^\d{4}-\d{2}-\d{2}$/);
- assert.equal(added[0].synonyms[0].url,'https://www.merriam-webster.com/dictionary/calm');
+ // placid has one definition, so its whole-word synonym belongs to that definition.
+ assert.equal(added[0].senses[0].synonyms[0].url,'https://www.merriam-webster.com/dictionary/calm');
+ assert.equal(added[0].synonyms.length,0);
  assert.equal(shareFileName('Teddy F.',new Date(2026,9,15)),'lexicon-teddy-f-2026-10-15.json');
 });
 test('imports reject bad input safely',()=>{

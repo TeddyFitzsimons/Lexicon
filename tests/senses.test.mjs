@@ -7,13 +7,15 @@ import {playableQuestions} from '../src/lib/sentenceGame.ts';
 import {buildShareFile,parseImport} from '../src/lib/share.ts';
 
 /** The validation case: three numbered definitions, two lettered subdefinitions under 2. */
+/** Definitions are built by hand here, so give each the three (empty) relationship lists. */
+const R={synonyms:[],antonyms:[],relatedForms:[]};
 const lexiconSenses=()=>[
- {id:'d1',definition:'A book containing an alphabetical arrangement of words in a language and their definitions.',examples:['She kept a lexicon of Greek on her desk.'],subsenses:[]},
- {id:'d2',definition:'',examples:[],subsenses:[
-  {id:'d2a',definition:'The vocabulary of a language, individual speaker, group of speakers, or subject.',examples:['The lexicon of sailing is full of odd words.']},
-  {id:'d2b',definition:'The total stock of morphemes in a language.',examples:['Linguists catalogued the lexicon of the dialect.']},
+ {id:'d1',definition:'A book containing an alphabetical arrangement of words in a language and their definitions.',examples:['She kept a lexicon of Greek on her desk.'],...R,subsenses:[]},
+ {id:'d2',definition:'',examples:[],...R,subsenses:[
+  {id:'d2a',definition:'The vocabulary of a language, individual speaker, group of speakers, or subject.',examples:['The lexicon of sailing is full of odd words.'],...R},
+  {id:'d2b',definition:'The total stock of morphemes in a language.',examples:['Linguists catalogued the lexicon of the dialect.'],...R},
  ]},
- {id:'d3',definition:'A repertoire or inventory.',examples:['A lexicon of dance moves.','Her lexicon of excuses was endless.'],subsenses:[]},
+ {id:'d3',definition:'A repertoire or inventory.',examples:['A lexicon of dance moves.','Her lexicon of excuses was endless.'],...R,subsenses:[]},
 ];
 const lexicon=()=>normalize({id:'w-lexicon',term:'Lexicon',partOfSpeech:'Noun',senses:lexiconSenses()});
 const other=(id,term,definition,example)=>normalize({id,term,partOfSpeech:'Noun',senses:[{id:id+'s',definition,examples:[example]}]});
@@ -51,7 +53,7 @@ test('reordering and deleting renumber automatically; ids and examples move with
 });
 
 test('saving keeps the hierarchy, trims text and drops only empty entries',()=>{
- const draft={...lexicon(),senses:[...lexiconSenses(),{id:'empty',definition:'  ',examples:[],subsenses:[{id:'empty-sub',definition:'',examples:[]}]}]};
+ const draft={...lexicon(),senses:[...lexiconSenses(),{id:'empty',definition:'  ',examples:[],...R,subsenses:[{id:'empty-sub',definition:'',examples:[],...R}]}]};
  draft.senses[1].subsenses[0]={...draft.senses[1].subsenses[0],definition:'  The vocabulary of a language, individual speaker, group of speakers, or subject.  '};
  const saved=cleaned(draft,'w-lexicon');
  assert.equal(saved.senses.length,3);
@@ -61,7 +63,7 @@ test('saving keeps the hierarchy, trims text and drops only empty entries',()=>{
 });
 
 test('existing vocabulary migrates without losing a definition or an example',()=>{
- const oldStyle=normalize({id:'x',term:'placid',partOfSpeech:'Adjective',senses:[{id:'s1',definition:'Calm.',examples:['A placid lake.']},{id:'s2',definition:'Not easily upset.',examples:[]}]});
+ const oldStyle=normalize({id:'x',term:'placid',partOfSpeech:'Adjective',senses:[{id:'s1',definition:'Calm.',examples:['A placid lake.'],...R},{id:'s2',definition:'Not easily upset.',examples:[],...R}]});
  assert.deepEqual(oldStyle.senses.map(s=>[s.id,s.definition,s.examples,s.subsenses]),[['s1','Calm.',['A placid lake.'],[]],['s2','Not easily upset.',[],[]]]);
  const original=normalize({id:'y',term:'terse',definition:'Brief.',example:'A terse reply.'});
  assert.deepEqual(original.senses.map(s=>[s.definition,s.examples,s.subsenses]),[['Brief.',['A terse reply.'],[]]]);
@@ -70,10 +72,10 @@ test('existing vocabulary migrates without losing a definition or an example',()
 
 test('validation catches examples that would otherwise be lost',()=>{
  assert.equal(sensesProblem(lexiconSenses()),null);
- assert.match(sensesProblem([{id:'a',definition:'',examples:['An orphan example.'],subsenses:[]}]),/Definition 1 has examples but no text/);
- assert.match(sensesProblem([{id:'a',definition:'Fine.',examples:[],subsenses:[{id:'b',definition:'Also fine.',examples:[]},{id:'c',definition:' ',examples:['Lost?']}]}]),/Definition 1b has examples/);
- assert.equal(sensesProblem([{id:'a',definition:'',examples:[],subsenses:[]}]),'needs a definition');
- assert.equal(cleanSenses([{id:'a',definition:'',examples:[],subsenses:[]}]).length,0);
+ assert.match(sensesProblem([{id:'a',definition:'',examples:['An orphan example.'],...R,subsenses:[]}]),/Definition 1 has examples but no text/);
+ assert.match(sensesProblem([{id:'a',definition:'Fine.',examples:[],...R,subsenses:[{id:'b',definition:'Also fine.',examples:[],...R},{id:'c',definition:' ',examples:['Lost?'],...R}]}]),/Definition 1b has examples/);
+ assert.equal(sensesProblem([{id:'a',definition:'',examples:[],...R,subsenses:[]}]),'needs a definition');
+ assert.equal(cleanSenses([{id:'a',definition:'',examples:[],...R,subsenses:[]}]).length,0);
 });
 
 test('letters run a to z, then aa',()=>{

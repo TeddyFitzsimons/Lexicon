@@ -2,6 +2,7 @@ import {normalize,type RelatedTerm,type Word} from './words.ts';
 import {answerKey} from './gameText.ts';
 import {dayKey} from './dates.ts';
 import {cleanSenses,hasDefinition} from './senses.ts';
+import {relations,type Relations} from './relations.ts';
 
 /**
  * Share files are untrusted input: everything is size-limited, type-checked and
@@ -13,19 +14,23 @@ export const MAX_FILE_BYTES=2_000_000;
 const LIMITS={words:5000,term:100,definition:2000,examples:10,example:500,senses:20,related:30,pos:40,pron:120};
 const MW_LINK=/^https:\/\/(www\.)?merriam-webster\.com\/dictionary\/\S+$/i;
 
-type SharedSubsense={definition:string;examples:string[]};
+type SharedLinks={synonyms?:SharedRelated[];antonyms?:SharedRelated[];relatedForms?:SharedRelated[]};
+type SharedSubsense={definition:string;examples:string[]}&SharedLinks;
 /** `definition` may be empty when the definition only groups lettered subdefinitions. */
-type SharedSense={definition:string;examples:string[];subsenses?:SharedSubsense[]};
+type SharedSense={definition:string;examples:string[];subsenses?:SharedSubsense[]}&SharedLinks;
 type SharedRelated={term:string;url?:string};
 export type SharedWord={term:string;partOfSpeech:string;pronunciation?:string;readablePronunciation?:string;senses:SharedSense[];synonyms?:SharedRelated[];antonyms?:SharedRelated[];relatedForms?:SharedRelated[]};
 export type ShareFile={format:typeof SHARE_FORMAT;version:number;from:string;exportedAt:string;words:SharedWord[]};
 
 const related=(items:RelatedTerm[])=>items.filter(r=>r.term.trim()).map(r=>r.url?{term:r.term,url:r.url}:{term:r.term});
+/** Only the relationship lists that have something in them, so share files stay small and readable. */
+const links=(r:Relations):SharedLinks=>Object.fromEntries(relations.filter(k=>r[k].length).map(k=>[k,related(r[k])]));
+const readLinks=(x:Record<string,unknown>):SharedLinks=>Object.fromEntries(relations.map(k=>[k,cleanRelated(x[k])]).filter(([,v])=>(v as RelatedTerm[]).length));
 /** Builds the file others can drop into their Lexicon. No ids, favorites or private flags leave the device. */
 export function buildShareFile(words:Word[],from:string,now=new Date()):ShareFile{
  return {format:SHARE_FORMAT,version:SHARE_VERSION,from:from.trim(),exportedAt:now.toISOString(),
   words:words.filter(w=>w.term.trim()&&hasDefinition(w.senses)).map(w=>{
-   const senses=cleanSenses(w.senses).map(({definition,examples,subsenses}):SharedSense=>subsenses.length?{definition,examples,subsenses:subsenses.map(({definition,examples})=>({definition,examples}))}:{definition,examples});
+   const senses=cleanSenses(w.senses).map((s):SharedSense=>({definition:s.definition,examples:s.examples,...links(s),...(s.subsenses.length?{subsenses:s.subsenses.map(x=>({definition:x.definition,examples:x.examples,...links(x)}))}:{})}));
    const out:SharedWord={term:w.term.trim(),partOfSpeech:w.partOfSpeech,senses};
    if(w.pronunciation)out.pronunciation=w.pronunciation;
    if(w.readablePronunciation)out.readablePronunciation=w.readablePronunciation;
@@ -57,11 +62,12 @@ function cleanEntry(raw:unknown):SharedWord|string{
   const subsenses=Array.isArray(x.subsenses)?x.subsenses.slice(0,LIMITS.senses).flatMap(sub=>{
    if(!sub||typeof sub!=='object')return [];
    const y=sub as Record<string,unknown>,subDefinition=text(y.definition,LIMITS.definition);
-   return subDefinition?[{definition:subDefinition,examples:examplesOf(y.examples)}]:[];
+   return subDefinition?[{definition:subDefinition,examples:examplesOf(y.examples),...readLinks(y)}]:[];
   }):[];
   // Examples always belong to a definition with text.
   const examples=definition?examplesOf(x.examples):[];
-  return definition||subsenses.length?[subsenses.length?{definition,examples,subsenses}:{definition,examples}]:[];
+  const own=definition?readLinks(x):{};
+  return definition||subsenses.length?[{definition,examples,...own,...(subsenses.length?{subsenses}:{})}]:[];
  }):[];
  // Older and hand-written files: a single "definition" with optional "example"/"examples".
  if(!senses.length){const definition=text(r.definition,LIMITS.definition);if(definition)senses=[{definition,examples:[...(Array.isArray(r.examples)?r.examples:[r.example]).slice(0,LIMITS.examples).map(e=>text(e,LIMITS.example)).filter(Boolean)]}]}

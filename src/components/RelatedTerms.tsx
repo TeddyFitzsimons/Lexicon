@@ -1,8 +1,7 @@
 import {useState} from 'react';
-import {type RelatedTerm} from '../lib/words';
+import {MW_LINK,type RelatedTerm} from '../lib/relations';
 
 const article=(word:string)=>/^[aeiou]/i.test(word)?'an':'a';
-export const MW_LINK=/^https:\/\/(www\.)?merriam-webster\.com\/dictionary\/\S+$/i;
 type Props={label:string;singular:string;items:RelatedTerm[];onChange:(items:RelatedTerm[])=>void};
 
 /** Related words as chips. Type and press Enter to add; the link button attaches an optional Merriam-Webster URL. */

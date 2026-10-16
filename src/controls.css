@@ -4,3 +4,17 @@
 .words-table tbody tr.word-row.row-cream{background:#fffefa}.words-table tbody tr.word-row.row-sage{background:#eaf1e5}.words-table tbody tr.word-row.row-cream:hover{background:#f7f7ee}.words-table tbody tr.word-row.row-sage:hover{background:#e1ecd9}
 .words-table td.paired-meanings{padding:0}.meaning-pair{display:grid;grid-template-columns:minmax(0,30fr) minmax(0,25fr)}.meaning-pair+.meaning-pair{border-top:1px solid #d5dfd3}.meaning-definition,.meaning-examples{padding:22px;min-width:0;overflow-wrap:anywhere;line-height:1.7}.meaning-examples p{margin:0;color:#536650;font-style:italic}.meaning-examples p+p{margin-top:12px}.meaning-examples .no-examples{color:#73816f;font-size:12px}
 @media(max-width:720px){.library-controls{flex-basis:100%;order:3}}
+
+/* Searchable menu: a filter box above the options; only the options scroll. */
+.lx-select-menu.is-searchable{display:flex;flex-direction:column;gap:6px;overflow:hidden;min-width:220px}
+.lx-select-search{position:relative;flex:none}
+.lx-select-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#8a9a85;pointer-events:none}
+/* !important: the app's general input styles would otherwise put the text under the icon. */
+.lx-select-search input{box-sizing:border-box!important;width:100%!important;height:36px!important;padding:0 10px 0 32px!important;border:1px solid #dbe4d1!important;border-radius:9px!important;background:#fff!important;color:var(--ink)!important;font:400 13px 'DM Sans',sans-serif!important;outline:0!important;box-shadow:none!important}
+.lx-select-search input:focus,.lx-select-search input:focus-visible{border-color:#9dbb85!important;box-shadow:0 0 0 3px #e3edd7!important;outline:0!important}
+.lx-select-search input::placeholder{color:#9aa79a}
+.lx-select-options{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none}
+.lx-select-menu .lx-select-empty{cursor:default;color:#8a978b;font-style:italic}
+
+/* Count beside a disclosure label */
+.lx-disclosure-count{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:2px;border-radius:9px;background:#e6efdc;color:#476a40;font-size:11px;font-weight:700}

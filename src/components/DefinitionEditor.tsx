@@ -1,5 +1,8 @@
 import {useEffect,useLayoutEffect,useRef,type TextareaHTMLAttributes} from 'react';
-import {letterFor,moved,newSense,newSubsense,type Sense,type Subsense} from '../lib/senses';
+import {definedMeanings,letterFor,moved,newSense,newSubsense,type Sense,type Subsense} from '../lib/senses';
+import {cleanRelated,labels,pickRelations,relations,singular,type Relation,type Relations} from '../lib/relations';
+import {RelatedTerms} from './RelatedTerms';
+import {Disclosure,Select} from './Select';
 
 const Icon={
  plus:<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>,
@@ -33,6 +36,7 @@ export function DefinitionEditor({senses,onChange}:Props){
      <label className="ed-field"><span>Definition {n}{hasSubs&&<em>optional with subdefinitions</em>}</span>
       <GrowingText id={'def-'+sense.id} placeholder={hasSubs?'A general meaning that covers the ones below':'What does it mean?'} value={sense.definition} onChange={e=>setSense(sense.id,{definition:e.target.value})}/></label>
      <Examples label={`${n}`} examples={sense.examples} onChange={examples=>setSense(sense.id,{examples})}/>
+     <DefinitionRelations label={`${n}`} value={sense} onChange={update=>setSense(sense.id,update)}/>
      {hasSubs&&<div className="ed-subsenses">{sense.subsenses.map((sub,j)=>{
       const label=`${n}${letterFor(j)}`;
       return <div className="ed-subsense" key={sub.id}>
@@ -41,6 +45,7 @@ export function DefinitionEditor({senses,onChange}:Props){
         <label className="ed-field"><span>Definition {label}</span>
          <GrowingText id={'def-'+sub.id} placeholder="A narrower meaning" value={sub.definition} onChange={e=>setSub(sense,sub.id,{definition:e.target.value})}/></label>
         <Examples label={label} examples={sub.examples} onChange={examples=>setSub(sense,sub.id,{examples})}/>
+        <DefinitionRelations label={label} value={sub} onChange={update=>setSub(sense,sub.id,update)}/>
        </div>
        <Order what={`definition ${label}`} index={j} count={sense.subsenses.length}
         onMove={d=>setSense(sense.id,{subsenses:moved(sense.subsenses,j,d)})}
@@ -87,4 +92,53 @@ function GrowingText({single,...props}:TextareaHTMLAttributes<HTMLTextAreaElemen
  // Re-measure when the column width changes and the text rewraps.
  useEffect(()=>{const el=ref.current;if(!el||typeof ResizeObserver==='undefined')return;let width=el.clientWidth;const observer=new ResizeObserver(()=>{if(el.clientWidth!==width){width=el.clientWidth;fit()}});observer.observe(el);return()=>observer.disconnect()},[]);
  return <textarea ref={ref} rows={1} {...props} className={`ed-grow ${props.className||''}`.trim()} onKeyDown={single?e=>{if(e.key==='Enter')e.preventDefault()}:props.onKeyDown}/>;
+}
+
+/**
+ * One definition's synonyms, antonyms and related forms. Folded away while empty so a new
+ * word stays a short form; open whenever the definition already has some.
+ */
+function DefinitionRelations({label,value,onChange}:{label:string;value:Relations;onChange:(update:Partial<Relations>)=>void}){
+ const count=relations.reduce((n,k)=>n+value[k].length,0);
+ return <Disclosure className="ed-def-relations" defaultOpen={count>0} count={count}
+  label={<>Synonyms, antonyms &amp; related forms<span className="sr-only"> for definition {label}</span></>}>
+  <div className="ed-def-relations-grid">{relations.map(k=><RelatedTerms key={k} label={labels[k]} singular={singular[k]} items={value[k]} onChange={items=>onChange({[k]:items})}/>)}</div>
+ </Disclosure>;
+}
+
+const shorten=(text:string,max=46)=>text.length>max?`${text.slice(0,max-1).trimEnd()}…`:text;
+
+/**
+ * Relationships from older files, when they belonged to the whole word. Lexicon never guesses
+ * which meaning they fit; this panel lets the person place each one, or remove it.
+ */
+export function UnassignedRelations({senses,value:given,onChange}:{senses:Sense[];value:Relations;onChange:(next:{senses:Sense[];unassigned:Relations})=>void}){
+ // Only the three lists: callers may pass a whole word, and nothing else may travel back out.
+ const value=pickRelations(given);
+ const count=relations.reduce((n,k)=>n+value[k].length,0);
+ if(!count)return null;
+ const targets=definedMeanings(senses);
+ function assign(kind:Relation,index:number,targetId:string){
+  const item=value[kind][index];
+  const add=<T extends Relations>(node:T):T=>({...node,[kind]:cleanRelated([...node[kind],item])});
+  const next=senses.map(s=>s.id===targetId?add(s):{...s,subsenses:s.subsenses.map(x=>x.id===targetId?add(x):x)});
+  onChange({senses:next,unassigned:{...value,[kind]:value[kind].filter((_,i)=>i!==index)}});
+ }
+ const remove=(kind:Relation,index:number)=>onChange({senses,unassigned:{...value,[kind]:value[kind].filter((_,i)=>i!==index)}});
+ return <section className="ed-unassigned" aria-labelledby="unassigned-title">
+  <h4 id="unassigned-title">Not yet assigned</h4>
+  <p>These came from an older Lexicon, when related words belonged to the whole word. Choose the definition each one belongs to.</p>
+  {relations.filter(k=>value[k].length).map(kind=><div className="ed-unassigned-group" key={kind}>
+   <span className="ed-field-label">{labels[kind]}</span>
+   <ul>{value[kind].map((item,i)=><li key={`${item.term}-${i}`}>
+    <span className="ed-unassigned-term">{item.term}</span>
+    {targets.length
+     ?<Select label={`Assign ${item.term} to a definition`} value="" className="ed-assign"
+       options={[{value:'',label:'Assign to…'},...targets.map(m=>({value:m.id,label:`${m.label}. ${shorten(m.definition)}`}))]}
+       onChange={id=>{if(id)assign(kind,i,id)}}/>
+     :<small>Add a definition first</small>}
+    <button type="button" className="ed-icon-button" aria-label={`Remove ${item.term}`} data-tip="Remove" onClick={()=>remove(kind,i)}>{Icon.close}</button>
+   </li>)}</ul>
+  </div>)}
+ </section>;
 }

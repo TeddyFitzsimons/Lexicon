@@ -13,6 +13,8 @@ Lexicon is now a desktop app for macOS and Windows. Download it, install it, and
 - Fonts are built in, so Lexicon looks the same offline.
 - F11 toggles full screen. Opening Lexicon twice brings the open window forward instead of starting a second copy.
 - **Subdefinitions**, Merriam-Webster style: numbered definitions (1, 2, 3) can hold lettered subdefinitions (2a, 2b), each with its own examples. Add, reorder and remove them in Manage words; numbers and letters update automatically. Flashcards, all three games, tests, search and share files use them. Existing words are unchanged.
+- **Synonyms, antonyms and related forms belong to each definition** (1, 2a, 2b), because different meanings have different relatives. Every word links to its Merriam-Webster page, or to a custom link you set. Older whole-word lists move onto the definition automatically when a word has only one meaning; otherwise they wait in a "Not yet assigned" panel in Manage words, so nothing is guessed or lost.
+- The part-of-speech menu has a search box.
 - Examples are labelled with the definition they belong to (1, 2a). Long definitions and examples grow to fit while you edit.
 - Sidebar tabs show the selected tab's marigold shape on hover. The profile pencil appears only when you point at your name. The library banner has flowing waves instead of a circle, and the Games page has a gaming bird.
 - Fix: if the profile ever failed to load, the next activity could have saved an empty profile over it and erased your streaks. It now waits until the profile has loaded.

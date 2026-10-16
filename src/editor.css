@@ -148,3 +148,22 @@
 .ed-example{align-items:flex-start}
 .ed-example .example-label{padding-top:13px}
 .ed-example .ed-icon-button{margin-top:4px}
+
+/* A definition's own synonyms, antonyms and related forms: folded under the examples, three columns when there's room. */
+.ed-def-relations{margin-top:2px}
+.ed-def-relations .lx-disclosure-toggle{font-size:12px}
+.ed-def-relations .lx-disclosure-body{padding-top:10px}
+.ed-def-relations-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px 16px}
+.ed-def-relations-grid .ed-related h4{font-size:11px}
+
+/* Older whole-word relationships waiting for a definition. */
+.ed-unassigned{padding:14px;border-radius:14px;background:#fbf6e6;border:1px solid #f0e3bb}
+.ed-unassigned h4{margin:0 0 4px;font-size:13px;color:#6b5717}
+.ed-unassigned>p{margin:0 0 12px;font-size:12px;line-height:1.5;color:#7b6a34}
+.ed-unassigned-group+.ed-unassigned-group{margin-top:10px}
+.ed-unassigned ul{display:flex;flex-direction:column;gap:6px;margin:6px 0 0;padding:0;list-style:none}
+.ed-unassigned li{display:flex;align-items:center;gap:8px}
+.ed-unassigned-term{flex:none;min-width:70px;font-weight:600;font-size:13px;color:var(--ink)}
+.ed-unassigned .ed-assign{flex:1;min-width:0}
+.ed-unassigned .ed-assign .lx-select-trigger{height:32px;font-size:12px}
+.ed-unassigned small{flex:1;color:#8a7a45;font-size:12px}

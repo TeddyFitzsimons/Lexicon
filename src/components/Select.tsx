@@ -1,29 +1,33 @@
 import React,{useEffect,useId,useRef,useState,type KeyboardEvent} from 'react';
 
 export type SelectOption<T extends string>={value:T;label:string;detail?:string|number};
-type Props<T extends string>={label:string;value:T;options:SelectOption<T>[];onChange:(value:T)=>void;className?:string;hideLabel?:boolean};
+/** `searchable` adds a filter box at the top of the menu, for longer lists. */
+type Props<T extends string>={label:string;value:T;options:SelectOption<T>[];onChange:(value:T)=>void;className?:string;hideLabel?:boolean;searchable?:boolean;searchPlaceholder?:string};
 
 /**
  * Lexicon's own dropdown, used instead of the browser's native select.
  * Listbox pattern: arrows, Home/End, type-ahead, Enter/Space to choose, Escape to close.
  */
-export function Select<T extends string>({label,value,options,onChange,className='',hideLabel=true}:Props<T>){
- const [open,setOpen]=useState(false),[active,setActive]=useState(0);
- const root=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null),list=useRef<HTMLUListElement>(null);
+export function Select<T extends string>({label,value,options:all,onChange,className='',hideLabel=true,searchable=false,searchPlaceholder='Search'}:Props<T>){
+ const [open,setOpen]=useState(false),[active,setActive]=useState(0),[query,setQuery]=useState('');
+ const root=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null),list=useRef<HTMLUListElement>(null),search=useRef<HTMLInputElement>(null);
+ // While searching, the menu shows matches only: names that start with the text first, then any that contain it.
+ const q=query.trim().toLowerCase();
+ const options=!searchable||!q?all:[...all.filter(o=>o.label.toLowerCase().startsWith(q)),...all.filter(o=>!o.label.toLowerCase().startsWith(q)&&o.label.toLowerCase().includes(q))];
  const typed=useRef({text:'',at:0});
  const id=useId();
- const selected=Math.max(0,options.findIndex(o=>o.value===value));
- const current=options[selected];
+ const selected=Math.max(0,all.findIndex(o=>o.value===value));
+ const current=all[selected];
 
  useEffect(()=>{
   if(!open)return;
-  list.current?.focus();
+  (searchable?search.current:list.current)?.focus();
   const outside=(e:PointerEvent)=>{if(!root.current?.contains(e.target as Node))setOpen(false)};
   document.addEventListener('pointerdown',outside);return()=>document.removeEventListener('pointerdown',outside);
  },[open]);
  useEffect(()=>{if(open)list.current?.querySelector(`[data-index="${active}"]`)?.scrollIntoView({block:'nearest'})},[active,open]);
 
- function show(){setActive(selected);setOpen(true)}
+ function show(){setQuery('');setActive(selected);setOpen(true)}
  function close(focus=true){setOpen(false);if(focus)trigger.current?.focus()}
  function choose(i:number){const o=options[i];if(o)onChange(o.value);close()}
  function typeahead(key:string){
@@ -32,6 +36,14 @@ export function Select<T extends string>({label,value,options,onChange,className
   const order=[...options.keys()].map(i=>(i+start)%options.length);
   const hit=order.find(i=>options[i].label.toLowerCase().startsWith(t.text));
   if(hit!==undefined)setActive(hit);
+ }
+ function onSearchKey(e:KeyboardEvent){
+  const last=options.length-1;
+  if(e.key==='ArrowDown'){e.preventDefault();setActive(i=>Math.min(i+1,last))}
+  else if(e.key==='ArrowUp'){e.preventDefault();setActive(i=>Math.max(i-1,0))}
+  else if(e.key==='Enter'){e.preventDefault();if(options.length)choose(active)}
+  else if(e.key==='Escape'){e.preventDefault();close()}
+  else if(e.key==='Tab')close(false);
  }
  function onListKey(e:KeyboardEvent){
   const last=options.length-1;
@@ -51,13 +63,29 @@ export function Select<T extends string>({label,value,options,onChange,className
    <span id={`${id}-value`}>{current?.label}</span>
    <svg className="lx-select-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
   </button>
-  {open&&<ul ref={list} className="lx-select-menu" role="listbox" tabIndex={-1} aria-labelledby={`${id}-label`} aria-activedescendant={`${id}-${active}`} onKeyDown={onListKey}>
+  {open&&!searchable&&<ul ref={list} className="lx-select-menu" role="listbox" tabIndex={-1} aria-labelledby={`${id}-label`} aria-activedescendant={`${id}-${active}`} onKeyDown={onListKey}>
    {options.map((o,i)=><li key={o.value} id={`${id}-${i}`} data-index={i} role="option" aria-selected={o.value===value}
     className={`${i===active?'is-active':''} ${o.value===value?'is-selected':''}`} onPointerMove={()=>setActive(i)} onClick={()=>choose(i)}>
     <span className="lx-select-check" aria-hidden="true">{o.value===value&&<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>}</span>
     <span className="lx-select-text">{o.label}</span>{o.detail!==undefined&&<span className="lx-select-detail">{o.detail}</span>}
    </li>)}
   </ul>}
+  {open&&searchable&&<div className="lx-select-menu is-searchable">
+   <div className="lx-select-search">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+    <input ref={search} type="text" role="combobox" aria-expanded="true" aria-controls={`${id}-list`} aria-autocomplete="list" aria-label={`Search ${label.toLowerCase()}`}
+     aria-activedescendant={options.length?`${id}-${active}`:undefined} placeholder={searchPlaceholder} value={query} spellCheck={false}
+     onChange={e=>{setQuery(e.target.value);setActive(0)}} onKeyDown={onSearchKey}/>
+   </div>
+   <ul ref={list} id={`${id}-list`} className="lx-select-options" role="listbox" aria-labelledby={`${id}-label`}>
+   {options.map((o,i)=><li key={o.value} id={`${id}-${i}`} data-index={i} role="option" aria-selected={o.value===value}
+    className={`${i===active?'is-active':''} ${o.value===value?'is-selected':''}`} onPointerMove={()=>setActive(i)} onClick={()=>choose(i)}>
+    <span className="lx-select-check" aria-hidden="true">{o.value===value&&<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>}</span>
+    <span className="lx-select-text">{o.label}</span>{o.detail!==undefined&&<span className="lx-select-detail">{o.detail}</span>}
+   </li>)}
+    {!options.length&&<li className="lx-select-empty" role="presentation">No match for “{query.trim()}”</li>}
+   </ul>
+  </div>}
  </div>;
 }
 
@@ -80,11 +108,11 @@ export function Toggle({label,checked,onChange}:{label:string;checked:boolean;on
 }
 
 /** Show/hide section with Lexicon's own chevron, used instead of the browser's <details>. */
-export function Disclosure({label,children,className=''}:{label:string;children:React.ReactNode;className?:string}){
- const [open,setOpen]=useState(false),id=useId();
+export function Disclosure({label,children,className='',defaultOpen=false,count}:{label:React.ReactNode;children:React.ReactNode;className?:string;defaultOpen?:boolean;count?:number}){
+ const [open,setOpen]=useState(defaultOpen),id=useId();
  return <div className={`lx-disclosure ${open?'is-open':''} ${className}`}>
   <button type="button" className="lx-disclosure-toggle" aria-expanded={open} aria-controls={id} onClick={()=>setOpen(!open)}>
-   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg>{label}</button>
+   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg>{label}{!!count&&<span className="lx-disclosure-count">{count}</span>}</button>
   {open&&<div className="lx-disclosure-body" id={id}>{children}</div>}
  </div>;
 }

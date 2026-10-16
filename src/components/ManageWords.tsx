@@ -1,15 +1,16 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Select} from './Select';
-import {RelatedTerms,MW_LINK} from './RelatedTerms';
+import {MW_LINK} from '../lib/relations';
 import {PronunciationFields} from './PronunciationFields';
-import {DefinitionEditor} from './DefinitionEditor';
+import {DefinitionEditor,UnassignedRelations} from './DefinitionEditor';
 import {definitionCount,firstDefinition,meanings,sensesProblem} from '../lib/senses';
-import {cleaned,emptyDraft,labels,parts,relations,type Draft,type Relation,type Word} from '../lib/words';
+import {cleaned,emptyDraft,parts,relations,type Draft,type RelatedTerm,type Word} from '../lib/words';
 import '../editor.css';
 
 type Props={words:Word[];focusId:string|null;addOnOpen:boolean;busy:boolean;onSave:(words:Word[])=>Promise<boolean>;onCancel:()=>void};
 type EditableWord=Draft&{id:string};
-const singular:Record<Relation,string>={synonyms:'synonym',antonyms:'antonym',relatedForms:'related form'};
+/** Every related word on a word: the unassigned ones and each definition's own. */
+const everyRelated=(w:EditableWord):RelatedTerm[]=>[...relations.flatMap(k=>w[k]),...w.senses.flatMap(s=>[s,...s.subsenses]).flatMap(d=>relations.flatMap(k=>d[k]))];
 const copyWord=(word:Word):EditableWord=>({...word,senses:word.senses.map(s=>({...s,examples:[...s.examples],subsenses:s.subsenses.map(x=>({...x,examples:[...x.examples]}))})),examples:[...word.examples],synonyms:word.synonyms.map(x=>({...x})),antonyms:word.antonyms.map(x=>({...x})),relatedForms:word.relatedForms.map(x=>({...x}))});
 const Icon={
  chevron:<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>,
@@ -50,7 +51,7 @@ export function ManageWords({words,focusId,addOnOpen,busy,onSave,onCancel}:Props
  async function save(){
   const incomplete=rows.find(w=>!w.term.trim()||sensesProblem(w.senses));
   if(incomplete){const problem=sensesProblem(incomplete.senses),term=incomplete.term.trim();setExpanded(prev=>[...new Set([...prev,incomplete.id])]);setSearch('');setMessage(!term?'One of your words is missing its spelling.':problem==='needs a definition'?`“${term}” needs a definition before you can save.`:`“${term}”: ${problem}`);requestAnimationFrame(()=>document.getElementById('word-'+incomplete.id)?.scrollIntoView({behavior:'smooth',block:'center'}));return}
-  const badLink=rows.find(w=>relations.some(key=>w[key].some(item=>item.url.trim()&&!MW_LINK.test(item.url.trim()))));
+  const badLink=rows.find(w=>everyRelated(w).some(item=>item.url.trim()&&!MW_LINK.test(item.url.trim())));
   if(badLink){setExpanded(prev=>[...new Set([...prev,badLink.id])]);setMessage(`A dictionary link on “${badLink.term}” isn’t a Merriam-Webster dictionary URL.`);return}
   if(await onSave(rows.map(w=>cleaned(w,w.id))))onCancel();
  }
@@ -66,7 +67,7 @@ export function ManageWords({words,focusId,addOnOpen,busy,onSave,onCancel}:Props
    return <article className={`ed-card ${open?'is-open':''} ${newIds.includes(row.id)?'is-new':''}`} id={'word-'+row.id} key={row.id}>
     <div className="ed-card-head">
      <input id={'term-'+row.id} className="ed-term" aria-label="Word" placeholder="New word" value={row.term} onChange={e=>patch(row.id,{term:e.target.value})}/>
-     <Select label="Part of speech" value={row.partOfSpeech||'Noun'} options={(parts.includes(row.partOfSpeech)||!row.partOfSpeech?parts:[row.partOfSpeech,...parts]).map(p=>({value:p,label:p}))} onChange={partOfSpeech=>patch(row.id,{partOfSpeech})} className="ed-pos"/>
+     <Select searchable searchPlaceholder="Search parts of speech" label="Part of speech" value={row.partOfSpeech||'Noun'} options={(parts.includes(row.partOfSpeech)||!row.partOfSpeech?parts:[row.partOfSpeech,...parts]).map(p=>({value:p,label:p}))} onChange={partOfSpeech=>patch(row.id,{partOfSpeech})} className="ed-pos"/>
      <button type="button" className="ed-summary" onClick={()=>toggle(row.id)} aria-expanded={open} aria-controls={'detail-'+row.id}>
       <span className="ed-summary-text">{open?'':first||'No definition yet'}</span>
       <span className="ed-summary-meta">{count} {count===1?'definition':'definitions'}</span>
@@ -78,7 +79,7 @@ export function ManageWords({words,focusId,addOnOpen,busy,onSave,onCancel}:Props
      <DefinitionEditor senses={row.senses} onChange={senses=>patch(row.id,{senses})}/>
      <aside className="ed-side">
       <PronunciationFields term={row.term} value={{ipa:row.pronunciation,readablePronunciation:row.readablePronunciation,readableManuallyEdited:row.readableManuallyEdited}} onChange={v=>patch(row.id,{pronunciation:v.ipa,readablePronunciation:v.readablePronunciation,readableManuallyEdited:v.readableManuallyEdited})}/>
-      {relations.map(key=><RelatedTerms key={key} label={labels[key]} singular={singular[key]} items={row[key]} onChange={items=>patch(row.id,{[key]:items})}/>)}
+      <UnassignedRelations senses={row.senses} value={row} onChange={({senses,unassigned})=>patch(row.id,{senses,...unassigned})}/>
      </aside>
     </div>}
    </article>})}

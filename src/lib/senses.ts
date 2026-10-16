@@ -6,11 +6,14 @@
  * never stored; they are derived from positions every time they are shown, so reordering
  * or deleting renumbers everything automatically and ids stay stable.
  */
-export type Subsense = { id: string; definition: string; examples: string[] };
-export type Sense = { id: string; definition: string; examples: string[]; subsenses: Subsense[] };
+import {cleanRelations,hasRelations,noRelations,pickRelations,readRelations,type Relations} from './relations.ts';
+
+/** Every definition and subdefinition has its own synonyms, antonyms and related forms. */
+export type Subsense = { id: string; definition: string; examples: string[] } & Relations;
+export type Sense = { id: string; definition: string; examples: string[]; subsenses: Subsense[] } & Relations;
 
 /** One definition flattened for display, games and tests. */
-export type Meaning = {
+export type Meaning = Relations & {
   id: string;
   /** "1", "2a" */
   label: string;
@@ -22,8 +25,8 @@ export type Meaning = {
   examples: string[];
 };
 
-export const newSubsense = (): Subsense => ({ id: crypto.randomUUID(), definition: '', examples: [] });
-export const newSense = (): Sense => ({ id: crypto.randomUUID(), definition: '', examples: [], subsenses: [] });
+export const newSubsense = (): Subsense => ({ id: crypto.randomUUID(), definition: '', examples: [], ...noRelations() });
+export const newSense = (): Sense => ({ id: crypto.randomUUID(), definition: '', examples: [], subsenses: [], ...noRelations() });
 
 /** a … z, then aa, ab … so letters never run out. */
 export function letterFor(index: number): string {
@@ -41,7 +44,8 @@ export function readSenses(value: unknown): Sense[] {
     id: str(s.id) || crypto.randomUUID(),
     definition: str(s.definition),
     examples: strings(s.examples),
-    subsenses: records(s.subsenses).map(x => ({ id: str(x.id) || crypto.randomUUID(), definition: str(x.definition), examples: strings(x.examples) })),
+    ...readRelations(s),
+    subsenses: records(s.subsenses).map(x => ({ id: str(x.id) || crypto.randomUUID(), definition: str(x.definition), examples: strings(x.examples), ...readRelations(x) })),
   }));
 }
 
@@ -50,13 +54,13 @@ export function meanings(senses: Sense[]): Meaning[] {
   return senses.flatMap((sense, i) => {
     const number = i + 1;
     const own: Meaning[] = sense.definition.trim() || sense.examples.some(e => e.trim())
-      ? [{ id: sense.id, label: `${number}`, number, letter: '', parentId: null, definition: sense.definition, examples: sense.examples }]
+      ? [{ id: sense.id, label: `${number}`, number, letter: '', parentId: null, definition: sense.definition, examples: sense.examples, ...pickRelations(sense) }]
       : [];
     return [
       ...own,
       ...sense.subsenses.map((sub, j) => {
         const letter = letterFor(j);
-        return { id: sub.id, label: `${number}${letter}`, number, letter, parentId: sense.id, definition: sub.definition, examples: sub.examples };
+        return { id: sub.id, label: `${number}${letter}`, number, letter, parentId: sense.id, definition: sub.definition, examples: sub.examples, ...pickRelations(sub) };
       }),
     ];
   });
@@ -77,24 +81,35 @@ export function cleanSenses(senses: Sense[]): Sense[] {
       id: s.id,
       definition: s.definition.trim(),
       examples: trimmed(s.examples),
-      subsenses: s.subsenses.map(x => ({ id: x.id, definition: x.definition.trim(), examples: trimmed(x.examples) })).filter(x => x.definition),
+      ...cleanRelations(s),
+      subsenses: s.subsenses.map(x => ({ id: x.id, definition: x.definition.trim(), examples: trimmed(x.examples), ...cleanRelations(x) })).filter(x => x.definition),
     }))
     .filter(s => s.definition || s.subsenses.length);
 }
 
+/** What a definition holds besides its text, named for a message ("examples", "synonyms"). */
+function attached(x: { examples: string[] } & Relations): string | null {
+  if (x.examples.some(e => e.trim())) return 'examples';
+  if (!hasRelations(x)) return null;
+  return x.synonyms.some(t => t.term.trim()) ? 'synonyms' : x.antonyms.some(t => t.term.trim()) ? 'antonyms' : 'related forms';
+}
+
 /**
  * Something that would be silently lost on save, described for the person.
- * Examples always belong to a definition, so examples without one are a problem.
+ * Examples and related words always belong to a definition, so having them without one is a problem.
  */
 export function sensesProblem(senses: Sense[]): string | null {
   for (const [i, s] of senses.entries()) {
     const n = i + 1;
-    if (!s.definition.trim() && s.examples.some(e => e.trim()))
+    const own = s.definition.trim() ? null : attached(s);
+    if (own)
       return s.subsenses.length
-        ? `Definition ${n} has examples but no text. Add its definition, or move the examples to ${n}a.`
-        : `Definition ${n} has examples but no text.`;
-    for (const [j, x] of s.subsenses.entries())
-      if (!x.definition.trim() && x.examples.some(e => e.trim())) return `Definition ${n}${letterFor(j)} has examples but no text.`;
+        ? `Definition ${n} has ${own} but no text. Add its definition, or move the ${own} to ${n}a.`
+        : `Definition ${n} has ${own} but no text.`;
+    for (const [j, x] of s.subsenses.entries()) {
+      const sub = x.definition.trim() ? null : attached(x);
+      if (sub) return `Definition ${n}${letterFor(j)} has ${sub} but no text.`;
+    }
   }
   return hasDefinition(senses) ? null : 'needs a definition';
 }
@@ -109,7 +124,7 @@ export function moved<T>(list: T[], index: number, delta: number): T[] {
 }
 
 /** One line of a displayed definition list. */
-export type DefinitionRow = {
+export type DefinitionRow = Relations & {
   key: string;
   /** "1." on a numbered definition, "" on a subdefinition */
   number: string;
@@ -128,10 +143,10 @@ export type DefinitionRow = {
 export function definitionRows(senses: Sense[]): DefinitionRow[] {
   return cleanSenses(senses).flatMap((sense, i) => {
     const n = i + 1;
-    const head: DefinitionRow = { key: sense.id, number: `${n}.`, letter: '', label: `${n}`, definition: sense.definition, examples: sense.examples, isSub: false, isHeading: !sense.definition };
+    const head: DefinitionRow = { key: sense.id, number: `${n}.`, letter: '', label: `${n}`, definition: sense.definition, examples: sense.examples, ...pickRelations(sense), isSub: false, isHeading: !sense.definition };
     return [
       head,
-      ...sense.subsenses.map((sub, j): DefinitionRow => ({ key: sub.id, number: '', letter: `${letterFor(j)}.`, label: `${n}${letterFor(j)}`, definition: sub.definition, examples: sub.examples, isSub: true, isHeading: false })),
+      ...sense.subsenses.map((sub, j): DefinitionRow => ({ key: sub.id, number: '', letter: `${letterFor(j)}.`, label: `${n}${letterFor(j)}`, definition: sub.definition, examples: sub.examples, ...pickRelations(sub), isSub: true, isHeading: false })),
     ];
   });
 }
