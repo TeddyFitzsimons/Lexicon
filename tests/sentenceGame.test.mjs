@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {blankSentence,answerKey,playableQuestions} from '../src/lib/sentenceGame.ts';
-const word=(id,term,examples)=>({id,term,senses:[{id:'s'+id,definition:'Definition of '+term,examples}]});
+const word=(id,term,examples)=>({id,term,senses:[{id:'s'+id,definition:'Definition of '+term,examples,subsenses:[]}]});
 test('blanks whole words, preserves punctuation and hides repeated answers',()=>{
  assert.deepEqual(blankSentence('Art is art, not a cart.','art'),['',' is ', ', not a cart.']);
  assert.equal(blankSentence('The artist arrived.','art'),null);

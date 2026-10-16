@@ -1,5 +1,6 @@
-import {definitionEntries,type Word} from './words.ts';
+import type {Word} from './words';
 import {category} from './collection.ts';
+import {definedMeanings} from './senses.ts';
 import {answerKey,maskTerms,shuffle,type Segment} from './gameText.ts';
 
 /** One definition offered as an answer. `segments` hides the quizzed word and the option's own word. */
@@ -8,14 +9,14 @@ export type MeaningQuestion={id:string;term:string;partOfSpeech:string;pronuncia
 
 export const OPTION_COUNT=5;
 
-export type Entry={id:string;term:string;partOfSpeech:string;pronunciation:string;senses:{id:string;definition:string;examples:string[]}[]};
+export type Entry={id:string;term:string;partOfSpeech:string;pronunciation:string;senses:{id:string;label:string;definition:string;examples:string[]}[]};
 
-/** Merge entries that share a spelling and keep only senses with a definition. */
+/** Merge entries that share a spelling. Every definition with text counts, subdefinitions (2a, 2b) included. */
 export function entries(words:Word[]):Entry[]{
  const byTerm=new Map<string,Entry>();
  for(const w of words){
   const term=w.term.trim();if(!term)continue;
-  const senses=definitionEntries(w).map(s=>({id:s.id,definition:s.definition.trim(),examples:s.examples.filter(x=>x.trim())}));
+  const senses=definedMeanings(w.senses).map(m=>({id:m.id,label:m.label,definition:m.definition.trim(),examples:m.examples.filter(x=>x.trim())}));
   if(!senses.length)continue;
   const key=answerKey(term),existing=byTerm.get(key);
   if(existing)existing.senses.push(...senses);

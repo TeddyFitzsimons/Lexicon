@@ -2,14 +2,6 @@
 
 Each `## <version>` section becomes the notes of the matching GitHub release.
 
-## Unreleased: hierarchical definitions
-
-- Add optional lettered subdefinitions beneath numbered definitions, each with its own examples.
-- Reorder or delete individual definitions or subdefinitions; numbering and lettering are recalculated from their positions, while stable node IDs and examples stay together.
-- The library, flashcards, definition game, spelling game, test questions, sentence game, editor search, and share previews understand subdefinitions.
-- Existing flat vocabulary files and old backups migrate when loaded. New share and backup files use version 2 to preserve the hierarchy and prevent older versions from silently discarding it.
-- New hierarchy tests cover the Lexicon example, edits, legacy migration, games, imports, sharing, and backup restoration.
-
 ## 2.2.0
 
 Lexicon is now a desktop app for macOS and Windows. Download it, install it, and use it with no browser, account or internet connection.
@@ -20,6 +12,9 @@ Lexicon is now a desktop app for macOS and Windows. Download it, install it, and
 - Share files save through the system's Save dialog. Merriam-Webster links open in your browser.
 - Fonts are built in, so Lexicon looks the same offline.
 - F11 toggles full screen. Opening Lexicon twice brings the open window forward instead of starting a second copy.
+- **Subdefinitions**, Merriam-Webster style: numbered definitions (1, 2, 3) can hold lettered subdefinitions (2a, 2b), each with its own examples. Add, reorder and remove them in Manage words; numbers and letters update automatically. Flashcards, all three games, tests, search and share files use them. Existing words are unchanged.
+- Examples are labelled with the definition they belong to (1, 2a). Long definitions and examples grow to fit while you edit.
+- Sidebar tabs show the selected tab's marigold shape on hover. The profile pencil appears only when you point at your name. The library banner has flowing waves instead of a circle, and the Games page has a gaming bird.
 - Fix: if the profile ever failed to load, the next activity could have saved an empty profile over it and erased your streaks. It now waits until the profile has loaded.
 
 ## 2.1.0 and earlier

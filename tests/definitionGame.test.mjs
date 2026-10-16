@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {meaningQuestions} from '../src/lib/definitionGame.ts';
 import {maskTerms} from '../src/lib/gameText.ts';
-const word=(id,term,definitions,partOfSpeech='Adjective')=>({id,term,partOfSpeech,readablePronunciation:'',senses:definitions.map((definition,i)=>({id:`${id}-${i}`,definition,examples:[]}))});
+const word=(id,term,definitions,partOfSpeech='Adjective')=>({id,term,partOfSpeech,readablePronunciation:'',senses:definitions.map((definition,i)=>({id:`${id}-${i}`,definition,examples:[],subsenses:[]}))});
 const joinMasked=segments=>segments.map(s=>s.hidden?'_':s.text).join('');
 test('masks whole-word terms, phrases and simple suffixed forms',()=>{
  assert.equal(joinMasked(maskTerms('Calm, calmly and calmness; not becalmed.',['calm'])),'_, _ and calmness; not becalmed.');

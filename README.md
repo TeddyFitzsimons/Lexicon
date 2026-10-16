@@ -12,7 +12,7 @@ I made Lexicon on my lunch break for fun, to help my friends and me improve our 
 
 ## What it does
 
-- **Your library.** Words with every meaning and example sentence, part of speech, IPA and a readable American pronunciation, synonyms, antonyms and related forms, with optional Merriam-Webster links.
+- **Your library.** Words with numbered definitions and lettered subdefinitions (1, 2a, 2b), each with its own example sentences, part of speech, IPA and a readable American pronunciation, synonyms, antonyms and related forms, with optional Merriam-Webster links.
 - **Flashcards** from all your words or just your favorites.
 - **Games.** *The missing word* fills a blank in your own example sentences, *Pick the meaning* finds the right definition among five, and *Spell It* says a word aloud for you to spell.
 - **Tests** with multiple choice, written and true-or-false questions, graded A+ to F.

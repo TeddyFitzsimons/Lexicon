@@ -42,12 +42,12 @@
 .ed-field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .ed-field>span,.ed-field-label{font-size:12px;font-weight:700;color:#55704a}
 .ed-field em{font-style:normal;font-weight:500;color:#93a287;margin-left:4px}
-.ed-field input,.ed-field textarea,.ed-example input,.ed-chip-add input,.ed-link-editor input{width:100%!important;max-width:100%!important;min-width:0;box-sizing:border-box;border:1px solid #dbe4d1!important;border-radius:11px!important;background:#fff!important;padding:10px 12px!important;font:400 14px/1.55 'DM Sans',sans-serif!important;color:var(--ink)!important;box-shadow:none!important;min-height:0!important}
+.ed-field input,.ed-field textarea,.ed-example input,.ed-example textarea,.ed-chip-add input,.ed-link-editor input{width:100%!important;max-width:100%!important;min-width:0;box-sizing:border-box;border:1px solid #dbe4d1!important;border-radius:11px!important;background:#fff!important;padding:10px 12px!important;font:400 14px/1.55 'DM Sans',sans-serif!important;color:var(--ink)!important;box-shadow:none!important;min-height:0!important}
 .ed-field textarea{resize:vertical;min-height:66px!important}
-.ed-field input:focus,.ed-field textarea:focus,.ed-example input:focus,.ed-chip-add input:focus,.ed-link-editor input:focus{outline:0;border-color:#9dbb85!important;box-shadow:0 0 0 4px #e3edd7!important}
+.ed-field input:focus,.ed-field textarea:focus,.ed-example input:focus,.ed-example textarea:focus,.ed-chip-add input:focus,.ed-link-editor input:focus{outline:0;border-color:#9dbb85!important;box-shadow:0 0 0 4px #e3edd7!important}
 .ed-examples{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .ed-example{display:flex;align-items:center;gap:6px;width:100%}
-.ed-example input{font-style:italic!important}
+.ed-example input,.ed-example textarea{font-style:italic!important}
 .ed-text-button{display:inline-flex;align-items:center;gap:6px;padding:4px 6px;margin-left:-6px;border:0;border-radius:8px;background:none;color:#3f6d3d;font-size:12px;font-weight:700;cursor:pointer}
 .ed-text-button:hover{background:#eef3e6}
 .ed-add-meaning{display:flex;align-items:center;justify-content:center;gap:8px;margin-left:42px;padding:12px;border:1.5px dashed #c9d8ba;border-radius:13px;background:none;color:#4b7339;font-size:13px;font-weight:700;cursor:pointer}
@@ -125,22 +125,26 @@
 }
 @media(prefers-reduced-motion:reduce){.ed-chevron,.ed-card{transition:none}}
 
-/* Hierarchical definition controls, aligned with the existing editor palette. */
-.ed-node-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
-.ed-node-title{font-size:12px;font-weight:700;color:#55704a}
-.ed-node-actions{display:flex;align-items:center;gap:4px}
-.ed-node-actions .ed-meaning-remove{margin:0}
-.ed-reorder{display:inline-flex;gap:4px}
-.ed-reorder .ed-mini-button{width:30px;height:30px;padding:0;justify-content:center;font-size:16px}
-.ed-subdefinitions{display:flex;flex-direction:column;gap:14px;padding:14px 0 2px;border-top:1px solid #e6ecdf}
-.ed-subdefinition{display:grid;grid-template-columns:27px minmax(0,1fr);gap:10px;align-items:start;padding:12px 12px 14px 10px;background:#f8faf5;border:1px solid #e6eddf;border-radius:12px}
-.ed-sub-letter{font-weight:700;font-size:13px;color:#547345;padding-top:6px}
-.ed-sub-fields{display:flex;flex-direction:column;gap:10px;min-width:0}
-.ed-add-subdefinition{align-self:flex-start;margin-left:0}
-.ed-meaning-fields{gap:10px}
-.ed-meanings .ed-meaning{grid-template-columns:30px minmax(0,1fr);border-bottom:1px solid #e6ecdf;padding-bottom:16px}
-.ed-meanings .ed-meaning-number{margin-top:3px}
-@media(max-width:600px){.ed-meanings .ed-meaning{grid-template-columns:1fr}.ed-meanings .ed-meaning-number{display:none}.ed-subdefinition{grid-template-columns:22px minmax(0,1fr);padding:10px 8px}.ed-node-actions{gap:2px}}
+/* Definition hierarchy: numbered definitions, lettered subdefinitions, reorder controls. */
+.ed-order{display:flex;flex-direction:column;gap:2px;margin-top:22px}
+.ed-order .ed-icon-button{width:30px;height:30px}
+.ed-icon-button.is-idle{visibility:hidden}
+.ed-subsenses{display:flex;flex-direction:column;gap:16px;padding:4px 0 4px 14px;border-left:2px solid #e7f0dc}
+.ed-subsense{display:grid;grid-template-columns:24px minmax(0,1fr) 30px;gap:10px;align-items:start}
+.ed-subsense-letter{display:grid;place-items:center;width:24px;height:24px;margin-top:24px;border-radius:50%;background:#fbf1d2;color:#8a6a12;font:700 12px/1 var(--serif)}
+.ed-subsense .ed-order{margin-top:20px}
+.ed-add-sub{align-self:flex-start}
+.ed-example .example-label{flex:none;min-width:24px;text-align:right;margin-right:2px}
+@media(max-width:600px){
+ .ed-meaning>.ed-order{position:absolute;top:-6px;right:-4px;flex-direction:row;margin:0}
+ .ed-subsenses{padding-left:10px}
+ .ed-subsense{grid-template-columns:minmax(0,1fr) 30px}
+ .ed-subsense-letter{display:none}
+}
 
-.ed-example-number{min-width:1.6rem;font-size:.8rem;color:var(--muted,#777);font-weight:600;flex-shrink:0}
-.hierarchy-example-label{font-weight:600;margin-right:.25rem}
+/* Definitions and examples grow to fit their text, so nothing is ever cut off. */
+.ed-grow{resize:none!important;overflow:hidden!important}
+.ed-field textarea.ed-grow{min-height:66px!important}
+.ed-example{align-items:flex-start}
+.ed-example .example-label{padding-top:13px}
+.ed-example .ed-icon-button{margin-top:4px}

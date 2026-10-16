@@ -1,5 +1,5 @@
 import {useEffect,useMemo,useRef,useState,type DragEvent} from 'react';
-import {letterFor,type Word} from '../lib/words';
+import type {Word} from '../lib/words';
 import {MAX_NAME,batchStats,calendarWeeks,level,milestones,streaks,wordBatches,type Metric,type Milestone,type Profile as ProfileData} from '../lib/activity';
 import {MAX_FILE_BYTES,buildShareFile,parseImport,shareFileName,toLibraryWords,type ParsedImport} from '../lib/share';
 import {fromDayKey} from '../lib/dates';
@@ -113,7 +113,7 @@ function Import({words,onImport}:{words:Word[];onImport:(w:Word[],from:string)=>
    {parsed&&!parsed.ok&&<p className="pf-error" role="alert">{parsed.error}</p>}
    {done&&<p className="pf-done" role="status">{done}</p>}
    <Disclosure label="Which files work?" className="pf-format">
-    <p>Share files from Lexicon, or any JSON list of words. Each word needs a <code>term</code> and either a <code>definition</code> or <code>senses</code>. Words you already have are skipped.</p>
+    <p>Share files from Lexicon, or any JSON list of words. Each word needs a <code>term</code> and either a <code>definition</code> or <code>senses</code> (which may hold lettered <code>subsenses</code>). Words you already have are skipped.</p>
     <pre>{`[
   { "term": "placid", "partOfSpeech": "Adjective",
     "definition": "Calm and peaceful.",
@@ -125,10 +125,7 @@ function Import({words,onImport}:{words:Word[];onImport:(w:Word[],from:string)=>
    <ul className="pf-incoming">{parsed.items.map(({word,duplicate})=><li key={word.term}>
     <button type="button" role="checkbox" aria-checked={duplicate?false:picked.has(word.term)} disabled={duplicate} className="pf-check-row" onClick={()=>toggle(word.term)}>
      <span className="pf-check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg></span>
-     <span className="pf-incoming-text"><b>{word.term}</b><small className="pf-incoming-hierarchy">{word.senses.map((sense,i)=><span key={i} className="pf-incoming-primary">
-      <span><b>{i+1}.</b> {sense.definition}</span>
-      {sense.subdefinitions?.map((sub,j)=><span className="pf-incoming-sub" key={j}><b>{letterFor(j)}.</b> {sub.definition}</span>)}
-     </span>)}</small></span>
+     <span className="pf-incoming-text"><b>{word.term}</b><small>{word.senses.flatMap(s=>[s.definition,...(s.subsenses||[]).map(x=>x.definition)]).find(Boolean)}</small></span>
      {duplicate&&<span className="pf-tag">Already saved</span>}
     </button></li>)}</ul>
    {parsed.rejected.length>0&&<Disclosure label={`${parsed.rejected.length} skipped ${parsed.rejected.length===1?'entry':'entries'}`} className="pf-format"><ul>{parsed.rejected.slice(0,20).map((r,i)=><li key={i}>{r}</li>)}</ul></Disclosure>}

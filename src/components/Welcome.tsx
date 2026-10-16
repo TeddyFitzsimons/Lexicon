@@ -1,6 +1,6 @@
-import {hasDefinition} from '../lib/words';
 import {useState} from 'react';
 import type {Word} from '../lib/words';
+import {hasDefinition} from '../lib/senses';
 import {playableQuestions} from '../lib/sentenceGame';
 import {meaningQuestions} from '../lib/definitionGame';
 import {MIN_TEST_WORDS,testableCount} from '../lib/test';
@@ -18,7 +18,7 @@ type Feature={kind:Featured|'empty';art?:string;label:string;cta:string;icon:'ga
 
 /** Builds the banner from the learner's own words, so every featured activity shows a real example. */
 function chooseFeature(words:Word[],a:WelcomeActions):Feature{
- const sentences=playableQuestions(words),meanings=meaningQuestions(words),withDefs=words.filter(w=>w.term.trim()&&hasDefinition(w));
+ const sentences=playableQuestions(words),meanings=meaningQuestions(words),withDefs=words.filter(w=>w.term.trim()&&hasDefinition(w.senses));
  const available:Featured[]=[];
  if(sentences.length)available.push('sentence');
  if(meanings.length)available.push('meaning');
@@ -50,6 +50,12 @@ export function Welcome({words,...actions}:{words:Word[]}&WelcomeActions){
     {feature.headline}
     <p className="feature-sub">{feature.sub}</p>
     <button className="primary-button feature-cta" onClick={feature.go}>{feature.cta}</button>
+   </div>
+   {/* Three soft layers in shades of the banner's colour, each with its own shape. The deepest holds the bird. Purely decorative. */}
+   <div className="feature-layers" aria-hidden="true">
+    <svg className="layer layer-far" viewBox="0 0 100 400" preserveAspectRatio="none" focusable="false"><path d="M26 0C22 120 16 220 10 300C6 350 3 380 1 400H100V0Z"/></svg>
+    <svg className="layer layer-mid" viewBox="0 0 100 400" preserveAspectRatio="none" focusable="false"><path d="M7 0C9 70 18 120 16 200C14 270 20 340 23 400H100V0Z"/></svg>
+    <svg className="layer layer-near" viewBox="0 0 100 400" preserveAspectRatio="none" focusable="false"><path d="M31 0C20 30 12 70 9 120C5 190 4 260 8 320C11 360 14 385 18 400H100V0Z"/></svg>
    </div>
    <img className={`feature-bird ${feature.art?"is-scene":""}`} src={feature.art||"/lexicon-waving.png"} alt=""/>
   </section>

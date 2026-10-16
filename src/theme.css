@@ -30,9 +30,12 @@ body{background:var(--canvas);color:var(--ink);font-family:var(--sans);-webkit-f
 .brand-name{font-family:var(--serif)!important;font-weight:600!important;font-size:27px!important;letter-spacing:-.02em!important;color:#F3EFE0!important}
 .workspace-tabs{gap:4px!important}
 .workspace-tabs button{position:relative;isolation:isolate;color:var(--on-sidebar)!important;background:transparent!important;border:0!important;box-shadow:none!important;font-weight:600!important;transition:color .15s}
-.workspace-tabs button:hover{color:#fff!important;background:#ffffff0f!important}
+.workspace-tabs button:hover{color:#fff!important}
 .workspace-tabs button.selected{color:var(--sidebar)!important;background:transparent!important}
-.workspace-tabs button.selected::before{content:'';position:absolute;inset:7px 2px;z-index:-1;background:var(--highlight);border-radius:7px 16px 9px 14px/12px 9px 14px 10px;transform:rotate(-1.4deg)}
+/* Every tab carries the selected tab's slanted marigold shape. Hover shows a soft wash of it; selected shows it in full. */
+.workspace-tabs button::before{content:'';position:absolute;inset:7px 2px;z-index:-1;background:var(--highlight);border-radius:7px 16px 9px 14px/12px 9px 14px 10px;transform:rotate(-1.4deg);opacity:0;transition:opacity .18s ease}
+.workspace-tabs button:not(.selected):hover::before{opacity:.2}
+.workspace-tabs button.selected::before{opacity:1}
 .workspace-tabs button.selected:hover{color:var(--sidebar)!important}
 .workspace-caption,.sidebar-quote{border-top-color:#ffffff1a!important}
 .sidebar-quote blockquote{color:#D6E0D5!important}
@@ -99,7 +102,7 @@ body{background:var(--canvas);color:var(--ink);font-family:var(--sans);-webkit-f
 /* Mobile top bar stays in the frame colour. */
 @media(max-width:850px){
  .workspace-nav{background:var(--sidebar)!important;border-bottom:0!important}
- .workspace-tabs button.selected::before{inset:3px 2px}
+ .workspace-tabs button::before{inset:3px 2px}
 }
 @media(prefers-reduced-motion:reduce){.primary-button,.workspace-tabs button{transition:none!important}.primary-button:hover:not(:disabled){transform:none}}
 
@@ -144,3 +147,23 @@ body{background:var(--canvas);color:var(--ink);font-family:var(--sans);-webkit-f
 @media(max-width:850px){.nav-divider{width:1px;height:28px;margin:auto 2px;align-self:center;flex:none}}
 /* The mark's dark cover disappears on the forest sidebar, so it sits on a small marigold disc. */
 .site-header .brand-logo{box-sizing:border-box;width:32px!important;height:32px!important;padding:1.5px;border-radius:50%;background:var(--highlight)}
+@media(prefers-reduced-motion:reduce){.workspace-tabs button::before{transition:none}}
+
+/* Library hero: three soft layers replace the circle. Each banner keeps its own hue.
+   Layer widths follow the bird's column, so the deepest layer always holds the whole bird. */
+.feature-banner::after{content:none!important}
+.feature-banner{--art:230px;--art-pad:44px;--layer-far:#E8F1E1;--layer-mid:#D4E7C9;--layer-near:#BDDAAE}
+.feature-banner.is-meaning{--layer-far:#F2EFF9;--layer-mid:#E5DFF5;--layer-near:#D5CCEF}
+.feature-banner.is-test{--layer-far:#ECF2F7;--layer-mid:#DCE8F2;--layer-near:#C7D9EA}
+.feature-banner.is-spell{--layer-far:#FCF4DE;--layer-mid:#FAE6B4;--layer-near:#F4D68E}
+.feature-layers{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.feature-layers .layer{position:absolute;top:0;right:0;height:100%}
+.feature-layers .layer-near{width:calc(var(--art) + var(--art-pad) + 90px);fill:var(--layer-near)}
+.feature-layers .layer-mid{width:calc(var(--art) + var(--art-pad) + 230px);fill:var(--layer-mid)}
+.feature-layers .layer-far{width:calc(var(--art) + var(--art-pad) + 370px);fill:var(--layer-far)}
+@media(max-width:1000px){.feature-banner{--art:170px;--art-pad:30px}.feature-layers .layer-mid{width:calc(var(--art) + var(--art-pad) + 180px)}.feature-layers .layer-far{width:calc(var(--art) + var(--art-pad) + 290px)}}
+/* Narrow: the bird sits in the bottom corner, so the layers become a low cluster framing it and the text stays on cream. */
+@media(max-width:700px){.feature-banner{--art:112px;--art-pad:0px}.feature-layers{top:auto;height:54%}.feature-layers .layer{top:auto;bottom:0;overflow:hidden}.feature-layers .layer-near{width:170px;height:100%;border-top-left-radius:100% 62%}.feature-layers .layer-mid{width:235px;height:82%;border-top-left-radius:100% 90%}.feature-layers .layer-far{width:310px;height:62%;border-top-left-radius:100% 100%}}
+/* The gaming bird has more detail than the other mascots, so it gets a little more room. */
+.games-hub-heading img{width:150px!important;margin-bottom:-14px!important}
+@media(max-width:600px){.games-hub-heading img{width:96px!important}}

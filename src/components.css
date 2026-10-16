@@ -80,23 +80,3 @@
 @media(max-width:600px){.games-hub-heading img{width:80px}}
 @media(prefers-reduced-motion:reduce){[data-tip]:hover::after{animation:none}.lx-disclosure-toggle svg,.lx-checkbox-box{transition:none}}
 .study-select-head .quiet-button{white-space:nowrap}
-
-/* Numbered meanings with indented lettered subdefinitions. Never ellipsize entries. */
-.hierarchy-list{display:flex;flex-direction:column;gap:13px;min-width:0;white-space:normal;overflow-wrap:anywhere}
-.hierarchy-primary{min-width:0}
-.hierarchy-definition{display:flex;align-items:baseline;gap:9px;line-height:1.65;min-width:0}
-.hierarchy-label{flex:none;min-width:22px;font-weight:700;color:var(--ink-soft)}
-.hierarchy-text{min-width:0;white-space:pre-wrap}
-.hierarchy-subdefinition{margin:8px 0 0 23px}
-.hierarchy-subdefinition .hierarchy-label{min-width:19px}
-.hierarchy-example{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:4px 0 0 31px;white-space:pre-wrap;overflow-wrap:anywhere;font-style:italic}
-.hierarchy-subdefinition .hierarchy-example{margin-left:28px}
-.hierarchy-study{gap:15px;text-align:left}
-.hierarchy-study .hierarchy-definition{line-height:1.65}
-@media(max-width:600px){.hierarchy-subdefinition{margin-left:18px}.hierarchy-example{margin-left:26px}}
-
-/* Give full-length hierarchy entries breathing room inside the library table. */
-.paired-meanings>.hierarchy-list{padding:19px 22px;font-size:13px;line-height:1.75}
-.hierarchy-library .hierarchy-primary+.hierarchy-primary{padding-top:13px;border-top:1px solid #dce4d3}
-.study-answer .hierarchy-example{font-size:14px;line-height:1.7}
-@media(max-width:600px){.paired-meanings>.hierarchy-list{padding:14px 12px}}

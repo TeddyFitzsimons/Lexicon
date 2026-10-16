@@ -1,5 +1,6 @@
-import {definitionEntries,type Word} from './words.ts';
+import type {Word} from './words';
 import {answerKey,blankSentence,shuffle} from './gameText.ts';
+import {meanings} from './senses.ts';
 export {answerKey,blankSentence,shuffle};
 export type Question={id:string;term:string;sentence:string;pieces:string[];definition:string;choices:string[]};
 export function playableQuestions(words:Word[]):Question[]{
@@ -7,7 +8,7 @@ export function playableQuestions(words:Word[]):Question[]{
  const seen=new Set<string>();
  return words.flatMap(w=>{
   if(seen.has(answerKey(w.term)))return [];
-  const candidates=definitionEntries(w).flatMap(s=>s.examples.map(sentence=>({sentence,definition:s.definition,pieces:blankSentence(sentence,w.term)}))).filter(x=>x.pieces!==null);
+  const candidates=meanings(w.senses).flatMap(s=>s.examples.map(sentence=>({sentence,definition:s.definition,pieces:blankSentence(sentence,w.term)}))).filter(x=>x.pieces!==null);
   if(!candidates.length)return [];
   seen.add(answerKey(w.term));const example=shuffle(candidates)[0];
   const alternatives=shuffle(terms.filter(t=>answerKey(t)!==answerKey(w.term))).slice(0,3);

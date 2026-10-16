@@ -1,0 +1,26 @@
+/* Definitions in Merriam-Webster's shape. Numbers sit in a fixed gutter; letters indent one step further,
+   so long text wraps under itself and the hierarchy reads at a glance. */
+.definition-line{display:flex;align-items:baseline;gap:6px;min-width:0}
+.definition-line .sense-number{flex:none;width:22px}
+.definition-line .sense-letter{flex:none;width:16px;font-family:var(--serif);font-weight:700;color:var(--marigold)}
+.definition-line .definition-text{flex:1;min-width:0;overflow-wrap:anywhere}
+.example-label{display:inline-block;margin-right:8px;font:normal 600 11px/1 var(--serif);letter-spacing:.02em;color:var(--marigold);vertical-align:1px}
+
+/* Library table */
+.paired-meanings .meaning-pair.is-heading .meaning-definition,.paired-meanings .meaning-pair.is-heading .meaning-examples{padding-bottom:0}
+.paired-meanings .meaning-pair.is-heading+.meaning-pair.is-sub .meaning-definition,.paired-meanings .meaning-pair.is-heading+.meaning-pair.is-sub .meaning-examples{padding-top:4px}
+.paired-meanings .meaning-pair.is-sub{border-top:1px dashed #e4eadd}
+.paired-meanings .meaning-pair.is-heading+.meaning-pair.is-sub{border-top:0}
+.paired-meanings .meaning-pair.is-sub .meaning-definition,.paired-meanings .meaning-pair.is-sub .meaning-examples{padding-top:12px;padding-bottom:14px}
+
+/* Flashcards */
+.definition-stack{display:flex;flex-direction:column}
+.definition-stack .definition-entry+.definition-entry{margin-top:16px}
+.definition-stack .definition-entry.is-sub{margin-top:8px}
+.definition-stack p{margin:0}
+.definition-stack blockquote{margin:8px 0 0 28px}
+.definition-stack .definition-entry.is-sub blockquote{margin-left:50px}
+.definition-stack .definition-entry:only-child blockquote{margin-left:0}
+/* Flashcards centre their text; a numbered list must read from a left edge, so the list is a centred left-aligned column. */
+.study-card .definition-stack{width:100%;max-width:560px;margin:0 auto;text-align:left}
+.study-card .definition-stack blockquote{text-align:left}

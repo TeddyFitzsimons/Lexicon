@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {buildTest,gradeQuestion,letterGrade,scoreTest,isAnswered} from '../src/lib/test.ts';
 import {pickQuote,pageQuote,quotes} from '../src/lib/quotes.ts';
 import {pickFeatured} from '../src/lib/featured.ts';
-const word=(id,term,def,pos='Adjective')=>({id,term,partOfSpeech:pos,readablePronunciation:'',senses:[{id:id+'s',definition:def,examples:[]}]});
+const word=(id,term,def,pos='Adjective')=>({id,term,partOfSpeech:pos,readablePronunciation:'',senses:[{id:id+'s',definition:def,examples:[],subsenses:[]}]});
 const lib=['calm','brisk','vivid','placid','terse','wry'].map((t,i)=>word(String(i),t,`Definition of ${t}`));
 const shown=segs=>segs.map(s=>s.hidden?'_':s.text).join('');
 

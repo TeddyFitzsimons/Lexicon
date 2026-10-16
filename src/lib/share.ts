@@ -1,19 +1,21 @@
-import {normalize,hasDefinition,type RelatedTerm,type Word} from './words.ts';
+import {normalize,type RelatedTerm,type Word} from './words.ts';
 import {answerKey} from './gameText.ts';
 import {dayKey} from './dates.ts';
+import {cleanSenses,hasDefinition} from './senses.ts';
 
 /**
  * Share files are untrusted input: everything is size-limited, type-checked and
  * reduced to known fields before it can reach the library.
  */
 export const SHARE_FORMAT='lexicon-share';
-export const SHARE_VERSION=2;
+export const SHARE_VERSION=1;
 export const MAX_FILE_BYTES=2_000_000;
-const LIMITS={words:5000,term:100,definition:2000,examples:10,example:500,senses:20,subdefinitions:52,related:30,pos:40,pron:120};
+const LIMITS={words:5000,term:100,definition:2000,examples:10,example:500,senses:20,related:30,pos:40,pron:120};
 const MW_LINK=/^https:\/\/(www\.)?merriam-webster\.com\/dictionary\/\S+$/i;
 
-type SharedSubdefinition={definition:string;examples:string[]};
-type SharedSense={definition:string;examples:string[];subdefinitions?:SharedSubdefinition[]};
+type SharedSubsense={definition:string;examples:string[]};
+/** `definition` may be empty when the definition only groups lettered subdefinitions. */
+type SharedSense={definition:string;examples:string[];subsenses?:SharedSubsense[]};
 type SharedRelated={term:string;url?:string};
 export type SharedWord={term:string;partOfSpeech:string;pronunciation?:string;readablePronunciation?:string;senses:SharedSense[];synonyms?:SharedRelated[];antonyms?:SharedRelated[];relatedForms?:SharedRelated[]};
 export type ShareFile={format:typeof SHARE_FORMAT;version:number;from:string;exportedAt:string;words:SharedWord[]};
@@ -22,8 +24,9 @@ const related=(items:RelatedTerm[])=>items.filter(r=>r.term.trim()).map(r=>r.url
 /** Builds the file others can drop into their Lexicon. No ids, favorites or private flags leave the device. */
 export function buildShareFile(words:Word[],from:string,now=new Date()):ShareFile{
  return {format:SHARE_FORMAT,version:SHARE_VERSION,from:from.trim(),exportedAt:now.toISOString(),
-  words:words.filter(w=>w.term.trim()&&hasDefinition(w)).map(w=>{
-   const out:SharedWord={term:w.term.trim(),partOfSpeech:w.partOfSpeech,senses:w.senses.filter(s=>s.definition.trim()||s.subdefinitions.some(sub=>sub.definition.trim())).map(s=>({definition:s.definition,examples:s.examples.filter(e=>e.trim()),subdefinitions:s.subdefinitions.filter(sub=>sub.definition.trim()).map(sub=>({definition:sub.definition,examples:sub.examples.filter(e=>e.trim())}))}))};
+  words:words.filter(w=>w.term.trim()&&hasDefinition(w.senses)).map(w=>{
+   const senses=cleanSenses(w.senses).map(({definition,examples,subsenses}):SharedSense=>subsenses.length?{definition,examples,subsenses:subsenses.map(({definition,examples})=>({definition,examples}))}:{definition,examples});
+   const out:SharedWord={term:w.term.trim(),partOfSpeech:w.partOfSpeech,senses};
    if(w.pronunciation)out.pronunciation=w.pronunciation;
    if(w.readablePronunciation)out.readablePronunciation=w.readablePronunciation;
    for(const k of ['synonyms','antonyms','relatedForms'] as const)if(w[k].length)out[k]=related(w[k]);
@@ -42,6 +45,7 @@ function cleanRelated(v:unknown):RelatedTerm[]{
  });
 }
 /** Reduces one untrusted entry to a valid shared word, or a reason it was rejected. */
+const examplesOf=(v:unknown)=>Array.isArray(v)?v.slice(0,LIMITS.examples).map(e=>text(e,LIMITS.example)).filter(Boolean):[];
 function cleanEntry(raw:unknown):SharedWord|string{
  if(!raw||typeof raw!=='object'||Array.isArray(raw))return 'not a word entry';
  const r=raw as Record<string,unknown>;
@@ -50,13 +54,14 @@ function cleanEntry(raw:unknown):SharedWord|string{
  let senses:SharedSense[]=Array.isArray(r.senses)?r.senses.slice(0,LIMITS.senses).flatMap(s=>{
   if(!s||typeof s!=='object')return [];
   const x=s as Record<string,unknown>,definition=text(x.definition,LIMITS.definition);
-  const examples=Array.isArray(x.examples)?x.examples.slice(0,LIMITS.examples).map(e=>text(e,LIMITS.example)).filter(Boolean):[];
-  const subdefinitions:SharedSubdefinition[]=Array.isArray(x.subdefinitions)?x.subdefinitions.slice(0,LIMITS.subdefinitions).flatMap(sub=>{
+  const subsenses=Array.isArray(x.subsenses)?x.subsenses.slice(0,LIMITS.senses).flatMap(sub=>{
    if(!sub||typeof sub!=='object')return [];
-   const node=sub as Record<string,unknown>,value=text(node.definition,LIMITS.definition);
-   return value?[{definition:value,examples:Array.isArray(node.examples)?node.examples.slice(0,LIMITS.examples).map(e=>text(e,LIMITS.example)).filter(Boolean):[]}]:[];
+   const y=sub as Record<string,unknown>,subDefinition=text(y.definition,LIMITS.definition);
+   return subDefinition?[{definition:subDefinition,examples:examplesOf(y.examples)}]:[];
   }):[];
-  return definition||subdefinitions.length?[{definition,examples,subdefinitions}]:[];
+  // Examples always belong to a definition with text.
+  const examples=definition?examplesOf(x.examples):[];
+  return definition||subsenses.length?[subsenses.length?{definition,examples,subsenses}:{definition,examples}]:[];
  }):[];
  // Older and hand-written files: a single "definition" with optional "example"/"examples".
  if(!senses.length){const definition=text(r.definition,LIMITS.definition);if(definition)senses=[{definition,examples:[...(Array.isArray(r.examples)?r.examples:[r.example]).slice(0,LIMITS.examples).map(e=>text(e,LIMITS.example)).filter(Boolean)]}]}
