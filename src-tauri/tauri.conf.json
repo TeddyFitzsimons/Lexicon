@@ -42,9 +42,19 @@
       "capabilities": ["main"]
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENENERCOTczMkQ0QkE3QzQKUldURXAwc3RjN2xOemRIKzh0M09nRHY1UkpoVkFYaDZBMzZrVWRaRmROVjNnTGQ2MkxWWUFMMmQK",
+      "endpoints": [
+        "https://github.com/TeddyFitzsimons/Lexicon/releases/latest/download/latest.json"
+      ],
+      "windows": { "installMode": "passive" }
+    }
+  },
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "publisher": "Teddy Fitzsimons",
     "copyright": "© 2026 Teddy Fitzsimons. MIT License.",
     "category": "Education",

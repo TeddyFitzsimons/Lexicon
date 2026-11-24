@@ -26,13 +26,18 @@ jobs:
           - name: macOS universal
             os: macos-latest
             rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
-            tauri_args: --target universal-apple-darwin --bundles app,dmg
-            output: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            tauri_args: --target universal-apple-darwin --bundles app,dmg,updater
+            output: |
+              src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+              src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app.tar.gz
+              src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app.tar.gz.sig
           - name: Windows x64
             os: windows-latest
             rust_targets: x86_64-pc-windows-msvc
-            tauri_args: --bundles nsis
-            output: src-tauri/target/release/bundle/nsis/*-setup.exe
+            tauri_args: --bundles nsis,updater
+            output: |
+              src-tauri/target/release/bundle/nsis/*-setup.exe
+              src-tauri/target/release/bundle/nsis/*-setup.exe.sig
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -57,7 +62,11 @@ jobs:
           key: ${{ matrix.os }}-release
       - run: npm ci
       - run: npm test
-      - run: npx tauri build ${{ matrix.tauri_args }}
+      - name: Build Lexicon
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build ${{ matrix.tauri_args }}
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: installer-${{ matrix.os }}
@@ -83,7 +92,34 @@ jobs:
           merge-multiple: true
       - name: Checksums
         working-directory: installers
-        run: sha256sum * | tee SHA256SUMS.txt
+        run: sha256sum $(ls | grep -vE '\.sig$|^latest\.json$') | tee SHA256SUMS.txt
+      - name: Updater manifest (latest.json)
+        working-directory: installers
+        env:
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          version="${TAG#v}"
+          mac_tarball=$(ls *.app.tar.gz 2>/dev/null | head -n1)
+          mac_sig=$(cat "${mac_tarball}.sig" 2>/dev/null || echo "")
+          win_installer=$(ls *-setup.exe 2>/dev/null | head -n1)
+          win_sig=$(cat "${win_installer}.sig" 2>/dev/null || echo "")
+          base="https://github.com/${REPO}/releases/download/${TAG}"
+          mac_url="${base}/${mac_tarball}"
+          win_url="${base}/${win_installer}"
+          pub_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          python3 - "$version" "$pub_date" "$mac_sig" "$mac_url" "$win_sig" "$win_url" <<'PY' > latest.json
+          import json, sys
+          version, pub_date, mac_sig, mac_url, win_sig, win_url = sys.argv[1:]
+          platforms = {}
+          if mac_sig and mac_url and not mac_url.endswith('/'):
+              platforms['darwin-aarch64'] = {'signature': mac_sig, 'url': mac_url}
+              platforms['darwin-x86_64']  = {'signature': mac_sig, 'url': mac_url}
+          if win_sig and win_url and not win_url.endswith('/'):
+              platforms['windows-x86_64'] = {'signature': win_sig, 'url': win_url}
+          json.dump({'version': version, 'pub_date': pub_date, 'notes': f'Lexicon {version}', 'platforms': platforms}, sys.stdout, indent=2)
+          PY
+          cat latest.json
       - name: Release notes from CHANGELOG.md
         env:
           TAG: ${{ github.ref_name }}
@@ -91,7 +127,7 @@ jobs:
           version="${TAG#v}"
           awk -v v="$version" '$0 ~ "^## " v "( |$)" {f=1; next} /^## / {if (f) exit} f' CHANGELOG.md > notes.md
           [ -s notes.md ] || { echo "CHANGELOG.md has no '## $version' section"; exit 1; }
-          printf '\n---\n\n**Download:** `.dmg` for Mac, `-setup.exe` for Windows. First time? See [INSTALL.md](https://github.com/%s/blob/%s/INSTALL.md); your computer will warn you because the app isn'"'"'t signed.\n\nChecksums are in `SHA256SUMS.txt`.\n' "$GITHUB_REPOSITORY" "$TAG" >> notes.md
+          printf '\n---\n\n**Download:** `.dmg` for Mac, `-setup.exe` for Windows. First time? See [INSTALL.md](https://github.com/%s/blob/%s/INSTALL.md); your computer will warn you because the app isn'"'"'t signed.\n\nAlready on 2.3.0 or newer? Lexicon checks for updates at launch and will offer to install this one.\n\nChecksums are in `SHA256SUMS.txt`.\n' "$GITHUB_REPOSITORY" "$TAG" >> notes.md
           cat notes.md
       - name: Create draft release
         env:

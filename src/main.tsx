@@ -12,6 +12,7 @@ import {Quote} from './components/Quote';
 import {pageQuote} from './lib/quotes';
 import {loadProfile,loadWords,saveProfile,saveWords,snapshotData} from './lib/storage';
 import {installDesktopBehaviour} from './lib/platform';
+import {checkForUpdatesOnLaunch} from './lib/updates';
 import {emptyProfile,logBatch,record,type ActivityKind,type Profile as ProfileData} from './lib/activity';
 import type {NavIconName} from './components/NavIcon';
 import {withoutWord,type Word} from './lib/words';
@@ -82,3 +83,4 @@ function App(){
 }
 installDesktopBehaviour();
 createRoot(document.getElementById('root')!).render(<App/>);
+void checkForUpdatesOnLaunch();

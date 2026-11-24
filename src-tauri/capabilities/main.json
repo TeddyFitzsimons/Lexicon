@@ -12,6 +12,8 @@
     "allow-show-data-folder",
     "allow-save-file",
     "allow-toggle-fullscreen",
+    "updater:default",
+    "process:allow-restart",
     {
       "identifier": "opener:allow-open-url",
       "allow": [

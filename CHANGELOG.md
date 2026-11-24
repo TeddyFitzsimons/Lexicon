@@ -2,6 +2,12 @@
 
 Each `## <version>` section becomes the notes of the matching GitHub release.
 
+## 2.3.0
+
+- **Auto-updates.** Lexicon now checks for a newer, signed build on launch and offers to install it. Updates are verified against a public key baked into the app, so only builds signed by the real private key can install. Your words, favorites, activity and streaks are kept.
+- **MCP server** in [mcp-server/](mcp-server/): lets Claude Code or any MCP-capable AI read, search, add and remove words in your vocabulary file. Writes are atomic.
+- Fix: the "Open <word> in the editor" tooltip no longer clips off the left edge of the window for words in the leftmost column.
+
 ## 2.2.0
 
 Lexicon is now a desktop app for macOS and Windows. Download it, install it, and use it with no browser, account or internet connection.
