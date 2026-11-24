@@ -58,6 +58,8 @@
 [data-tip]:hover::after,[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;z-index:60;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);padding:6px 10px;border-radius:8px;background:var(--ink);color:#f3f7ea;font:600 11.5px/1.3 'DM Sans',sans-serif;letter-spacing:0;white-space:nowrap;pointer-events:none;box-shadow:0 6px 16px -6px #1d3a2266;animation:lx-tip .12s ease-out}
 @keyframes lx-tip{from{opacity:0;transform:translate(-50%,3px)}to{opacity:1;transform:translateX(-50%)}}
 @media(hover:none){[data-tip]:hover::after{display:none}}
+.term-button[data-tip]:hover::after,.term-button[data-tip]:focus-visible::after{left:0;transform:none;animation:lx-tip-fade .12s ease-out}
+@keyframes lx-tip-fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 
 .lx-disclosure-toggle{display:inline-flex;align-items:center;gap:6px;padding:4px 6px;margin-left:-6px;border:0;border-radius:8px;background:none;color:#476a40;font:700 13px 'DM Sans',sans-serif;cursor:pointer}
 .lx-disclosure-toggle:hover{background:#eef3e6}
